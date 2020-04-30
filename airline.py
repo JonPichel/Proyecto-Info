@@ -8,11 +8,13 @@ class Airline:
     name: string, name of the airline
     aircrafts: list, aircrafts of the airline
     operation: list, operations made by the airline (flights)
+    assignments: list, the relations between flights and aircrafts
     """
     def __init__(self):
         self.name = ""
         self.aircrafts = []
         self.operations = []
+        self.assignments = []
 
 def show_airline(a):
     """ Function show_airline (f)
