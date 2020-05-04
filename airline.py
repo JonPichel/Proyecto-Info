@@ -1,5 +1,6 @@
-import aircraft, flight
 import matplotlib.pyplot as plt
+
+import aircraft, flight
 
 class Airline:
     """ Airline ()
@@ -66,7 +67,7 @@ def add_aircraft(a,ac):
                 if i.callsign != ac.callsign:   # condition for repeated aircraft
                     m+=1
         if m==n:                            # See if the aircraft we are trying to add isn't repeated
-            a.aircrafts.append(ac)          
+            a.aircrafts.append(ac) 
             return True
         else:
             return False       # If it's not repeated it returns True, if it's repeated it returns False 
@@ -86,10 +87,10 @@ def add_operation(a,f):
     Tested by Raúl Criado on April 22nd 2020
     """
     try:
-        n=len(a.operations)        
-        m=0                         # m and n are used to see if there is no repetition in every single operation in a.operations list
-        for i in a.operations:      # for loop to see the enire a.operations list
-            if i == None:           # see if the a.operations is empty
+        n=len(a.operations)
+        m=0                                 # m and n are used to see if there is no repetition in every single operation in a.operations list
+        for i in a.operations:              # for loop to see the enire a.operations list
+            if i == None:                   # see if the a.operations is empty
                 a.operations.append(f)
                 return True
             else:
@@ -106,58 +107,32 @@ def add_operation(a,f):
         print("Wrong parameters, please provide an Airline and a Flight")
         return False
 
-
-def plot_assignments(a):
- """ Function plot_assignments(a)
+def insert_delay(a, depAp, depTm, d):
+    """ Function insert_delay (a, depAp, depTm, d) -> bool
     ==================================================
-    Plots the aircraft flights
-    a = object of class Airline
-    		Created by Raul Criado on May 3rd 2020
-   		 """ 
-		try:
-           			a = a.assignments
-			n = len(a.flights)
-			m = 0
-			while m < a.flight:
-			      if m%2==0:
-				plt.barh ([a.aircraft],[m.time_arr],color=’white’)
-	                             else:
-			           plt.barh([a.aircraft],[m.time_dep],left=m.time_arr,color=’green’)
-			plt.show()
-   		except AttributeError:
-        			print("Wrong parameters. Provide an Airline object.")
-        		
-
-def insert_delay(a,depAp,depTm,d)
- """ Function insert_delay(a,depAp,depTm,d)
-    ==================================================
-Chechs if exist a flight to add a delay.
-a = object of class Airline
-depAp = object of class Flight, string
-depTm = object of class Flight, integer
-d = object of class Airline, integer
-    	Returns True if the flight exists and update the time departure adding the delay.
-    	Created by Raul Criado on May 1st 2020
+    Checks if it exists a flight, and adds a delay to it.
+    a: Airline
+    depAp: string, name of the airport
+    depTm: int, time of departure
+    d: object of class Airline, integer
+    Return: True if the flight exists and update the time departure adding the delay.
+    Created by Raul Criado on May 1st 2020
+    Tested by Jonathan Pichel Carrera on May 4th 2020
     """
-
-try:
+    try:
         a = a.assignments
-        n = len(a.flights)
-        m = 0
-        for i in a.flights:
-        	if i.dep = depAp and i.time_dep = depTm:
-i.time_dep = i.time_dep + d
-return True
-        	else:
-		m+=1
-        if m = n:
-	return False
-except AttributeError:
-        print("Flight could not be found")
+        flights = a.flights
+        for i in range(len(flights)):
+            if flights[i].dep == depAp and flights[i].time_dep == depTm:
+                flight.delay_flight(flights[i], d)
+                return True
+        return False
+    except AttributeError:
+        print("Wrong parameters.")
         return False
 
 
-def check_operations(a)
+def check_operations(a):
     """ Function check_operations(a)
     ==================================================
     This function checks if fights can be allocated
@@ -166,48 +141,41 @@ def check_operations(a)
     Returns if a flight can be allocated or not and prints what is the error. Check if the    departure and arrival airport of consecutive flights are the same, if there is at least 60 min between arrival and departure and if passengers fit in the aircraft 
     Created by Raul Criado on May 1st 2020
     """
-try:                        
-	a = a.assignments
-        	n = len(a.flights)
-	m = 0
-	s = n + 1
-while m < n:     
-            	if m.dep == s.arr:           
-                		m+=1
-		else:
-	     		return False
-	     		print(‘Arrival airport m.arr not match with departure airport m.dep’)
-      	if m=n:
-	     return True
-       	
-f = len(a.flights)
-	p = 0
-while p<f:
-		if a.seats > p.passengers:
-			p+=1
-		else:
-			return False
-	     		print(‘Flight passengers do not fit in the aircraft’)
-	if p=f:
-	     return True
+    try:
+        a = a.assignments
+        n = len(a.flights)
+        m = 0
+        s = n + 1
+        while m < n:
+            if m.dep == s.arr:
+                m+=1
+            else:
+                print('Arrival airport m.arr not match with departure airport m.dep')
+                return False
+        if m == n:
+            return True
 
+        f = len(a.flights)
+        p = 0
+        while p < f:
+            if a.seats > p.passengers:
+                p += 1
+            else:
+                print('Flight passengers do not fit in the aircraft')
+                return False
+        if p == f:
+            return True
+        t = len(a.flights)
+        g = 0
+        while g < t:
+            if (g.time_dep - g.time_arr) >= 60:
+                g+=1
+            else:
+                print('There are less than 60 min time between arrival and departure')
+                return False
+        if g == t:
+            return True
 
-        	t = len(a.flights)
-	g = 0
-while g < t:     
-            	if (g.time_dep - g.time_arr) >= 60:           
-                		g+=1
-		else:
-	     		return False
-print(‘There are less than 60 min time between arrival and departure’)
-      	 if g=t:
-	     return True
-
-except AttributeError:
+    except AttributeError:
         print("Wrong parameters, please provide an Airline and a Flight")
         return False
-
-
-
-
-
