@@ -29,6 +29,12 @@ def plot_assignment(assig, show=True):
         plt.show()
 
 def plot_assignments(vector_assig):
+    """Function plot_assignments (vector_assig: Vector of Assignments)
+    ===================================================
+    Plot a list of assignments
+    vector_assig: List of Assignments, the assignments that shall be plotted
+    Created by Jonathan Pichel on May 5th 2020
+    """
     for assig in vector_assig:
         plot_assignment(assig, show=False)
     
