@@ -46,7 +46,7 @@ def show_airline(a):
         print('\t' * 2, end='')
         flight.show_flight(f)
 
-def add_aircraft(a,ac):
+def add_aircraft(a, ac):
     """ Function add_aircraft (a: Airline(), ac: Aircraft()): Boolean
     ===================================================
     Adds an aircraft to the airline if it isn't added yet

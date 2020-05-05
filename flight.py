@@ -130,3 +130,45 @@ def delay_flight(f, d):
     except AttributeError:
         print("Wrong parameters. Please provide a Flight object and an integer.")
         return False
+    
+def check_overlap(f1, f2):
+    """ Function check_overlap (f1: Flight, f2: Flight): bool
+    =================================================
+    Checks if the time ranges of two flights overlap
+    f1: Flight, first flight to check
+    f2: Flight, second flight to check
+    Return: bool, False if they don't overlap, True if they do
+    Created by Jonathan Pichel on April 5rd 2020
+    """
+    if ((f1.time_dep < f2.time_dep and f1.time_arr < f2.time_dep) or
+        (f1.time_dep > f2.time_arr and f1.time_arr > f2.time_arr)):
+        return False
+    else:
+        return True
+
+def check_overlap_list(f, vector_flight):
+    """ Function check_overlap_list (f: Flight, vector_flight: list): bool
+    =================================================
+    Checks if one flight overlaps with any other one from a list of flights
+    f: Flight, a Flight object
+    vector_flight: list, a list of Flight objects
+    Return: bool, False if they don't overlap, True if they do
+    Created by Jonathan Pichel on April 5rd 2020
+    """
+    for flight in vector_flight:
+        if check_overlap(f, flight):
+            return True
+    return False
+
+def check_inner_overlap(vector_flight):
+    """ Function check_overlap_list (f: Flight, vector_flight: list): bool
+    =================================================
+    Checks if there exists any overlap between the flights of a list
+    vector_flight: list, a list of Flight objects
+    Return: bool, True if there's any overlap, False otherwise
+    Created by Jonathan Pichel on April 5rd 2020
+    """
+    for i in range(len(vector_flight)):
+        if check_overlap_list(vector_flight[i], vector_flight[i+1:]):
+            return True
+    return False
