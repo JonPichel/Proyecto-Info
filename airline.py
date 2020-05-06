@@ -143,43 +143,25 @@ def check_operations(a):
     """
     try:
         a = a.assignments
-        n = len(a.flights)
-        m = 0
-        s = n + 1
-        while m < n:
-            if m.dep == s.arr:
-                m+=1
-            else:
+        flights = a.flights
+        for i in range(len(flights)):
+            m = i + 1
+            if i.dep != m.arr:
                 print('Arrival airport m.arr not match with departure airport m.dep')
                 return False
-        if m == n:
-            return True
 
-        f = len(a.flights)
-        p = 0
-        while p < f:
-            if a.seats > p.passengers:
-                p += 1
-            else:
+            elif i.seats < a.passengers:
                 print('Flight passengers do not fit in the aircraft')
                 return False
-        if p == f:
-            return True
-        t = len(a.flights)
-        g = 0
-        while g < t:
-            if (g.time_dep - g.time_arr) >= 60:
-                g+=1
-            else:
+
+            elif (i.time_dep - i.time_arr) >= 60:
                 print('There are less than 60 min time between arrival and departure')
                 return False
-        if g == t:
-            return True
 
     except AttributeError:
         print("Wrong parameters, please provide an Airline and a Flight")
         return False
-    
+
     
 def plot_flights(a):
     """Function plot_flights (a: Airline()): none
