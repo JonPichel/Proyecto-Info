@@ -170,6 +170,7 @@ def plot_flights(a):
     a: object of class Airline, the airline which function shall plot the operations
     Return: none
     Created by Adrià Vaquer on May 5th 2020
+    Tested by Raúl Criado on May 6th 2020
     """
     if type(a) == Airline:
         flight.plot_flights(a.operations)
