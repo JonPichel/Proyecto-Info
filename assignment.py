@@ -43,6 +43,7 @@ def plot_assignments(vector_assig):
     Plots a list of assignments
     vector_assig: list, list of Assignments to be plotted
     Created by Adrià Vaquer on May 5th 2020
+    Tested by Raúl Criado on May 6th 2020
     """
     for assig in vector_assig:
         # We use plot_assignment with show set as False.
