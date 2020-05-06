@@ -1,3 +1,5 @@
+import matplotlib.pyplot as plt
+
 class Flight:
     """ Flight ()
     ===================================================
@@ -172,3 +174,39 @@ def check_inner_overlap(vector_flight):
         if check_overlap_list(vector_flight[i], vector_flight[i+1:]):
             return True
     return False
+
+def plot_flight(f, show=True):
+    """ Function plot_flight (f: Flight, show: bool)
+    =================================================
+    Plots a flight
+    f: Flight, a Flight object
+    show: bool, flag to control whether to show the plot or not. True by default.
+    Created by Pol Roca on April 6th 2020
+    """
+    # Plot the flight
+    plt.barh(f"{f.arr}\n{f.dep}", flight_duration(f), left=f.time_dep, color='lightblue')
+    
+    # Plot customization
+    # Set the ticks and give them labels
+    x_ticks = [60 * i for i in range(0, 24, 3)]         # Only set ticks every three hours
+    x_labels = list(map(format_time, x_ticks))   # List of strings, formatted with flight.format_time()
+    plt.xticks(x_ticks, x_labels)
+    plt.xlim(0, 60 * 24)
+
+    # Show the plot if asked to
+    if show:
+            plt.show()
+
+def plot_flights(vf):
+    """Function plot_flights (vf: list of Flights)
+    ===================================================
+    Plots a list of flights
+    vf: list, list of Flights to be plotted
+    Created by Jonathan Pichel on May 5th 2020
+    """
+    for flight in vf:
+        # We use plot_assignment with show set as False.
+        plot_flight(flight, show=False)
+    
+    # We show the plot once all of them are plotted.
+    plt.show()

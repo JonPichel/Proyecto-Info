@@ -48,6 +48,9 @@ ac.seats = 220
 # Make a list of the flights
 flights = [f1, f2, f3, f4]
 
+flight.plot_flights(flights)
+
+"""
 # main
 print("Phase1 test program")
 # Show all the initial values
@@ -70,3 +73,4 @@ for f in flights:
         print("Flight from", f.dep, "to", f.arr, "doesn't fit in aircraft.")
 
 print("Phase1 test program end")
+"""
