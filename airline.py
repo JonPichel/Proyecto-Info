@@ -179,3 +179,17 @@ def check_operations(a):
     except AttributeError:
         print("Wrong parameters, please provide an Airline and a Flight")
         return False
+    
+    
+def plot_flights(a):
+    """Function plot_flights (a: Airline()): none
+    ==========================================
+    Plots the list of flight operation of an airline
+    a: object of class Airline, the airline which function shall plot the operations
+    Return: none
+    Created by Adrià Vaquer on May 5th 2020
+    """
+    if type(a) == Airline:
+        flight.plot_flights(a.operations)
+    else:
+        print("Wrong Parameters, please provide an Airline")
