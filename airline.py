@@ -188,4 +188,3 @@ def plot_assignments(a):
     plot_assignments(a.assignments)
     # We call the plot_assignments function to add it to the class airline
 
-    plt.show()
