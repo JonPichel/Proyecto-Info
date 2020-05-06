@@ -123,10 +123,10 @@ def insert_delay(a, depAp, depTm, d):
         a = a.assignments
         flights = a.flights
         for i in range(len(flights)):
-            if flights[i].dep == depAp and flights[i].time_dep == depTm:
-                flight.delay_flight(flights[i], d)
+            if flights[i].dep == depAp and flights[i].time_dep == depTm:    # Checks if the flight matches
+                flight.delay_flight(flights[i], d)                          # We call the delay_flight function to apply it in that case
                 return True
-        return False
+        return False                                                        # If the flight doesn't match returns False
     except AttributeError:
         print("Wrong parameters.")
         return False
@@ -143,39 +143,35 @@ def check_operations(a):
     """
     try:
         a = a.assignments
-        n = len(a.flights)
-        m = 0
-        s = n + 1
-        while m < n:
-            if m.dep == s.arr:
-                m+=1
-            else:
+        flights = a.flights
+        for i in range(len(flights)):
+            m = i + 1                                                                       # A variable that allows us to check the arrival and compare it with the previous departure
+            if i.dep != m.arr:                                                              # Checks if the departure airport is the same of the next flight arrival airport
                 print('Arrival airport m.arr not match with departure airport m.dep')
                 return False
-        if m == n:
-            return True
 
-        f = len(a.flights)
-        p = 0
-        while p < f:
-            if a.seats > p.passengers:
-                p += 1
-            else:
+            elif i.seats < a.passengers:                                                    # Checks if the passengers of the flight fits in the aircraft assigned
                 print('Flight passengers do not fit in the aircraft')
                 return False
-        if p == f:
-            return True
-        t = len(a.flights)
-        g = 0
-        while g < t:
-            if (g.time_dep - g.time_arr) >= 60:
-                g+=1
-            else:
+
+            elif (i.time_dep - i.time_arr) >= 60:                                           # Checks if the time difference between arrival and departure is over 60 minutes
                 print('There are less than 60 min time between arrival and departure')
                 return False
-        if g == t:
-            return True
 
     except AttributeError:
         print("Wrong parameters, please provide an Airline and a Flight")
         return False
+
+    
+def plot_flights(a):
+    """Function plot_flights (a: Airline()): none
+    ==========================================
+    Plots the list of flight operation of an airline
+    a: object of class Airline, the airline which function shall plot the operations
+    Return: none
+    Created by Adrià Vaquer on May 5th 2020
+    """
+    if type(a) == Airline:
+        flight.plot_flights(a.operations)
+    else:
+        print("Wrong Parameters, please provide an Airline")
