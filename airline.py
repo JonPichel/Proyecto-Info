@@ -175,3 +175,16 @@ def plot_flights(a):
         flight.plot_flights(a.operations)
     else:
         print("Wrong Parameters, please provide an Airline")
+
+
+def plot_assignments(a):
+    """Function plot_assignments (a: airline)
+    ===================================================
+    Plots a list of assignments
+    a: object of class airline
+    Created by Raúl Criado on May 6th 2020
+    """
+    plot_assignments(a.assignments)
+    # We call the plot_assignments function to add it to the class airline
+
+    plt.show()
