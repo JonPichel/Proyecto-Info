@@ -123,10 +123,10 @@ def insert_delay(a, depAp, depTm, d):
         a = a.assignments
         flights = a.flights
         for i in range(len(flights)):
-            if flights[i].dep == depAp and flights[i].time_dep == depTm:
-                flight.delay_flight(flights[i], d)
+            if flights[i].dep == depAp and flights[i].time_dep == depTm:    # Checks if the flight matches
+                flight.delay_flight(flights[i], d)                          # We call the delay_flight function to apply it in that case
                 return True
-        return False
+        return False                                                        # If the flight doesn't match returns False
     except AttributeError:
         print("Wrong parameters.")
         return False
@@ -145,16 +145,16 @@ def check_operations(a):
         a = a.assignments
         flights = a.flights
         for i in range(len(flights)):
-            m = i + 1
-            if i.dep != m.arr:
+            m = i + 1                                                                       # A variable that allows us to check the arrival and compare it with the previous departure
+            if i.dep != m.arr:                                                              # Checks if the departure airport is the same of the next flight arrival airport
                 print('Arrival airport m.arr not match with departure airport m.dep')
                 return False
 
-            elif i.seats < a.passengers:
+            elif i.seats < a.passengers:                                                    # Checks if the passengers of the flight fits in the aircraft assigned
                 print('Flight passengers do not fit in the aircraft')
                 return False
 
-            elif (i.time_dep - i.time_arr) >= 60:
+            elif (i.time_dep - i.time_arr) >= 60:                                           # Checks if the time difference between arrival and departure is over 60 minutes
                 print('There are less than 60 min time between arrival and departure')
                 return False
 
