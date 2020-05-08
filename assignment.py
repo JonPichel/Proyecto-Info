@@ -89,3 +89,17 @@ def assign_flight(assig, f):
         assig.flights.append(f)
         return True
     return False
+
+def show_assignment(assig):
+""" Function show_assignment (assig: Assignment)
+=================================================
+Prints in the screen the data of the assignment assig
+assig: Assignment, an Assigment object
+Created by Pol Roca on April 6th 2020
+"""
+    try:
+        print("The flights in this assignemt are ",assig.flights)
+        print("The aircradt of this assignment is "assig.aircraft)
+
+    except AttributeError:
+        print("Wrong parameters, introduce a valid assignment")
