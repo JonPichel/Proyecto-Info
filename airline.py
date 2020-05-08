@@ -188,3 +188,32 @@ def plot_assignments(a):
     plot_assignments(a.assignments)
     # We call the plot_assignments function to add it to the class airline
 
+
+def assign_operations(a):
+    # Copy the airline information
+    aircrafts = a.aircrafts[:]
+    flights = a.flights[:]
+    assignments = []
+    # Create an assignment for each aircraft
+    for i in range(len(new.aircrafts)):
+        assig = assignment.Assignment()
+        assig.aircraft = new.aircrafts[i]
+        new.assignments.append(assig)
+    for i in range(len(new.flights)):
+        flight = new.flights[i]
+        for j in range(len(new.assignments)):
+            assig = new.assignments[j]
+            if assignment.assign_flight(assig, flight):
+                break
+        else:
+            # If the inner for loop finished without breaking, it means that the flight
+            # was incompatible with all the assignments
+            print("Flight:", flight.show_flight(flight), "could not be assigned.")
+    # Return the updated airline
+    new = airline.Airline()
+    new.aircrafts = aircrafts
+    new.flights = flights
+    new.assignments = assignments
+    return new
+
+
