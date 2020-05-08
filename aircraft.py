@@ -28,9 +28,9 @@ def show_aircraft(a):
       print("Wrong parameters. Provide an Aircraft object.")
       return
     # Check if some information is missing
-    if callsign == '':
+    if not callsign:
         callsign = 'UNKNOWN CALLSIGN'
-    if atype == '':
+    if not atype:
         atype = 'UNKNOWN AIRCRAFT TYPE'
     
     print(callsign, '(' + atype, 'with', seats, 'seats)')

@@ -59,9 +59,9 @@ def show_flight(f):
         return
    	
     # Check if some information is missing
-    if dep == '':
+    if not dep:
         dep = 'UNKNOWN LOCATION'
-    if arr == '':
+    if not arr:
         arr = 'UNKNOWN LOCATION'
     
     print(time_dep, dep, 'to', time_arr, arr, 'with', passengers, 'passengers')
