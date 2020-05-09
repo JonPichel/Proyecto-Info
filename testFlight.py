@@ -46,7 +46,7 @@ ac.type = "A320"
 ac.seats = 220
 
 # Make a list of the flights
-flights = [f1, f2, f3, f4]
+flights = [f1, f2, f4, f3]
 
 # main
 print("Phase1 test program")
@@ -77,3 +77,9 @@ flight.plot_flight(f1)
 
 # Test plot_flights
 flight.plot_flights(flights)
+
+for f in flights:
+    print(f.time_dep)
+
+for f in flight.sort_flights(flights):
+    print(f.time_dep)

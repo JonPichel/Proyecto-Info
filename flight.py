@@ -133,45 +133,48 @@ def delay_flight(f, d):
         print("Wrong parameters. Please provide a Flight object and an integer.")
         return False
     
-def check_overlap(f1, f2):
+def check_overlap(f1, f2, interval=60):
     """ Function check_overlap (f1: Flight, f2: Flight): bool
     =================================================
     Checks if the time ranges of two flights overlap
     f1: Flight, first flight to check
     f2: Flight, second flight to check
+    interval: int, minimum number of minutes that must exist between the flights
     Return: bool, False if they don't overlap, True if they do
     Created by Jonathan Pichel on April 5rd 2020
     """
-    if ((f1.time_dep < f2.time_dep and f1.time_arr < f2.time_dep) or
-        (f1.time_dep > f2.time_arr and f1.time_arr > f2.time_arr)):
+    if ((f1.time_dep < f2.time_dep - interval and f1.time_arr < f2.time_dep - interval) or
+        (f1.time_dep > f2.time_arr + interval and f1.time_arr > f2.time_arr + interval)):
         return False
     else:
         return True
 
-def check_overlap_list(f, vector_flight):
+def check_overlap_list(f, vector_flight, interval=60):
     """ Function check_overlap_list (f: Flight, vector_flight: list): bool
     =================================================
     Checks if one flight overlaps with any other one from a list of flights
     f: Flight, a Flight object
     vector_flight: list, a list of Flight objects
+    interval: int, minimum number of minutes that must exist between the flights
     Return: bool, False if they don't overlap, True if they do
     Created by Jonathan Pichel on April 5rd 2020
     """
     for flight in vector_flight:
-        if check_overlap(f, flight):
+        if check_overlap(f, flight, interval=interval):
             return True
     return False
 
-def check_inner_overlap(vector_flight):
+def check_inner_overlap(vector_flight, interval=60):
     """ Function check_overlap_list (f: Flight, vector_flight: list): bool
     =================================================
     Checks if there exists any overlap between the flights of a list
     vector_flight: list, a list of Flight objects
+    interval: int, minimum number of minutes that must exist between the flights
     Return: bool, True if there's any overlap, False otherwise
     Created by Jonathan Pichel on April 5rd 2020
     """
     for i in range(len(vector_flight)):
-        if check_overlap_list(vector_flight[i], vector_flight[i+1:]):
+        if check_overlap_list(vector_flight[i], vector_flight[i+1:], interval=interval):
             return True
     return False
 
@@ -195,7 +198,7 @@ def plot_flight(f, show=True):
 
     # Show the plot if asked to
     if show:
-            plt.show()
+        plt.show()
 
 def plot_flights(vf):
     """Function plot_flights (vf: list of Flights)
@@ -210,3 +213,39 @@ def plot_flights(vf):
     
     # We show the plot once all of them are plotted.
     plt.show()
+
+def sort_flights(vf):
+    """Function sort_flights (vf: list of Flights)
+    ===================================================
+    Given a list of flights, it sorts the flights by time of departure and returns the sorted list
+    vf: list, list of Flights to be sorted
+    Returns: list, a list of flights ordered by time_dep
+    Created by Jonathan Pichel on May 9th 2020
+    """
+    dept = {}
+    res = []
+    for i, f in enumerate(vf):
+        dept[f.time_dep] = i
+    
+    for x in sorted(dept):
+        res.append(vf[dept[x]])
+    return res
+
+def check_airports(vf):
+    """Function check_airports (vf: list of Flights)
+    ===================================================
+    Given a list of flights assigned to an aircraft, it checks that their airports' order makes sense.
+    vf: list, list of Flights to be sorted
+    Returns: False if it doesn't follow a logical order, True if it does
+    Created by Jonathan Pichel on May 9th 2020
+    """
+    # Iterate the sorted list of flights
+    for i, f in enumerate(sort_flights(vf)):
+        if not i == 0:
+            # If the flights departure airport doesn't match the arrival airport of the previous flight
+            if prev != f.dep:
+                # Return False
+                return False
+        prev = f.arr
+    # Else, return True
+    return True

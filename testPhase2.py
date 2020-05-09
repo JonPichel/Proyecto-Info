@@ -6,11 +6,13 @@ Created on Tue Apr 21 10:01:54 2020
 @author: cristina
 """
 
-import aircraft, flights, airline, assignment
+import aircraft, flight, airline, assignment
 from testAirline import createXicaAirline
 
 X = airline.assign_operations(createXicaAirline())
 airline.plot_assignments(X)
+for assig in X.assignments:
+    flight.plot_flights(assig.flights)
 
 airline.insert_delay(X, "Barcelona", 8*60, 60)
 if airline.check_operations(X):

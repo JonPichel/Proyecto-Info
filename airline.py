@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-import aircraft, flight
+import aircraft, flight, assignment
 
 class Airline:
     """ Airline ()
@@ -120,8 +120,7 @@ def insert_delay(a, depAp, depTm, d):
     Tested by Jonathan Pichel Carrera on May 4th 2020
     """
     try:
-        a = a.assignments
-        flights = a.flights
+        flights = a.operations
         for i in range(len(flights)):
             if flights[i].dep == depAp and flights[i].time_dep == depTm:    # Checks if the flight matches
                 flight.delay_flight(flights[i], d)                          # We call the delay_flight function to apply it in that case
@@ -132,36 +131,35 @@ def insert_delay(a, depAp, depTm, d):
         return False
 
 
-def check_operations(a):
+def check_operations(a, interval=60):
     """ Function check_operations(a)
     ==================================================
     This function checks if fights can be allocated
     a = object of class Airline
+    interval: int, minimum number of minutes that must exist between the flights
     This function has a boolean as output parameter
-    Returns if a flight can be allocated or not and prints what is the error. Check if the    departure and arrival airport of consecutive flights are the same, if there is at least 60 min between arrival and departure and if passengers fit in the aircraft 
+    Returns if a flight can be allocated or not and prints what is the error. Check if the departure and 
+    arrival airport of consecutive flights are the same, if there is at least 60 min between arrival and
+    departure and if passengers fit in the aircraft 
     Created by Raul Criado on May 1st 2020
+    Tested by Jonathan Pichel on May 9th 2020
     """
-    try:
-        a = a.assignments
-        flights = a.flights
-        for i in range(len(flights)):
-            m = i + 1                                                                       # A variable that allows us to check the arrival and compare it with the previous departure
-            if i.dep != m.arr:                                                              # Checks if the departure airport is the same of the next flight arrival airport
-                print('Arrival airport m.arr not match with departure airport m.dep')
+    for assig in a.assignments:
+        # Check if all the flights fit in the aircraft
+        for f in assig.flights:
+            if not flight.fits_flight_in_aircraft(f, assig.aircraft):
+                print("Flight:", flight.show_flight(f), "doesn't fit in the aircraft", aircraft.show_aircraft(assig.aircraft))
                 return False
 
-            elif i.seats < a.passengers:                                                    # Checks if the passengers of the flight fits in the aircraft assigned
-                print('Flight passengers do not fit in the aircraft')
-                return False
-
-            elif (i.time_dep - i.time_arr) >= 60:                                           # Checks if the time difference between arrival and departure is over 60 minutes
-                print('There are less than 60 min time between arrival and departure')
-                return False
-
-    except AttributeError:
-        print("Wrong parameters, please provide an Airline and a Flight")
-        return False
-
+        # Check if they are adequately spaced in time
+        if flight.check_inner_overlap(assig.flights, interval=interval):
+            print("Flights overlap in time.")
+            return False
+        
+        # Check if the airports' order is logical
+        if not flight.check_airports(assig.flights):
+            print("The airport's order doesn't make sense.")
+            return False
     
 def plot_flights(a):
     """Function plot_flights (a: Airline()): none
@@ -184,36 +182,35 @@ def plot_assignments(a):
     Plots a list of assignments
     a: object of class airline
     Created by Raúl Criado on May 6th 2020
+    Tested by Jonathan Pichel on May 9th 2020
     """
-    plot_assignments(a.assignments)
+    assignment.plot_assignments(a.assignments)
     # We call the plot_assignments function to add it to the class airline
 
 
 def assign_operations(a):
     # Copy the airline information
     aircrafts = a.aircrafts[:]
-    flights = a.flights[:]
+    flights = a.operations[:]
     assignments = []
     # Create an assignment for each aircraft
-    for i in range(len(new.aircrafts)):
+    for i in range(len(aircrafts)):
         assig = assignment.Assignment()
-        assig.aircraft = new.aircrafts[i]
-        new.assignments.append(assig)
-    for i in range(len(new.flights)):
-        flight = new.flights[i]
-        for j in range(len(new.assignments)):
-            assig = new.assignments[j]
-            if assignment.assign_flight(assig, flight):
+        assig.aircraft = aircrafts[i]
+        assignments.append(assig)
+    for i in range(len(flights)):
+        f = flights[i]
+        for j in range(len(assignments)):
+            assig = assignments[j]
+            if assignment.assign_flight(assig, f):
                 break
         else:
             # If the inner for loop finished without breaking, it means that the flight
             # was incompatible with all the assignments
-            print("Flight:", flight.show_flight(flight), "could not be assigned.")
+            print("Flight:", flight.show_flight(f), "could not be assigned.")
     # Return the updated airline
-    new = airline.Airline()
+    new = Airline()
     new.aircrafts = aircrafts
     new.flights = flights
     new.assignments = assignments
     return new
-
-

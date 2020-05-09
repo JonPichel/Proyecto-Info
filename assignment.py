@@ -85,9 +85,17 @@ def assign_flight(assig, f):
     Return: bool, True if it was possible to add the flight, False otherwise
     Created by Jonathan Pichel on April 5rd 2020
     """
+    time_dep = f.time_dep
+    prev = f.dep
+    for fl in flight.sort_flights(assig.flights):
+        prev = fl.arr
+        if fl.time_dep > time_dep:
+            break
+
     if flight.fits_flight_in_aircraft(f, assig.aircraft) and not flight.check_overlap_list(f, assig.flights):
-        assig.flights.append(f)
-        return True
+        if prev == f.dep:
+            assig.flights.append(f)
+            return True
     return False
 
 def show_assignment(assig):
