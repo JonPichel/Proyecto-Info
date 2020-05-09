@@ -28,9 +28,11 @@ def plot_assignment(assig, show=True):
     
     # Plot customization
     # Set the ticks and give them labels
-    x_ticks = [60 * i for i in range(0, 24, 3)]         # Only set ticks every three hours
+    x_ticks = [60 * i for i in range(0, 24)]         # Only set ticks every three hours
     x_labels = list(map(flight.format_time, x_ticks))   # List of strings, formatted with flight.format_time()
     plt.xticks(x_ticks, x_labels)
+    plt.tick_params(which='major', axis='x', rotation=45, labelsize='x-small')
+    plt.grid(which='major', axis='x', color='gray', linestyle='--', linewidth=0.5)
     plt.xlim(0, 60 * 24)
 
     # Show the plot if asked to
@@ -107,9 +109,11 @@ def show_assignment(assig):
     Tested by Adrià Vaquer on April 8th 2020
     """
     try:
-        print("The aircraft in this assignment is",assig.aircraft)
+        print("The aircraft in this assignment is: ", end='')
+        aircraft.show_aircraft(assig.aircraft)
         print("The flights in this assignment are:")
         for flights in assig.flights:
+            print('\t', end='')
             flight.show_flight(flights)
 
     except AttributeError:

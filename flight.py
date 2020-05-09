@@ -192,9 +192,11 @@ def plot_flight(f, show=True):
     
     # Plot customization
     # Set the ticks and give them labels
-    x_ticks = [60 * i for i in range(0, 24, 3)]         # Only set ticks every three hours
+    x_ticks = [60 * i for i in range(0, 24)]         # Only set ticks every three hours
     x_labels = list(map(format_time, x_ticks))   # List of strings, formatted with flight.format_time()
     plt.xticks(x_ticks, x_labels)
+    plt.tick_params(which='major', axis='x', rotation=45, labelsize='x-small')
+    plt.grid(which='major', axis='x', color='gray', linestyle='--', linewidth=0.5)
     plt.xlim(0, 60 * 24)
 
     # Show the plot if asked to

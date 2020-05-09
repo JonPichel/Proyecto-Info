@@ -7,9 +7,11 @@ Created on Tue Apr 21 10:01:54 2020
 """
 
 import aircraft, flight, airline, assignment
+
 from testAirline import createXicaAirline
 
 X = airline.assign_operations(createXicaAirline())
+
 airline.plot_assignments(X)
 for assig in X.assignments:
     flight.plot_flights(assig.flights)
@@ -20,5 +22,7 @@ if airline.check_operations(X):
 else:
     print("Reasigning flights again")
     X = airline.assign_operations(X)
+
+airline.plot_assignments(X)
 
 airline.show_airline(X)

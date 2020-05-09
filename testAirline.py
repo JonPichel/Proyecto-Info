@@ -45,6 +45,20 @@ def createXicaAirline ():
     FL4.time_dep = 20*60
     FL4.time_arr = 23*60
     FL4.passengers = 97
+    # creates fifth flight with some values
+    FL5 = flight.Flight()
+    FL5.dep = "Budapest"
+    FL5.arr = "Barcelona"
+    FL5.time_dep = 20.75*60
+    FL5.time_arr = 23*60
+    FL5.passengers = 113
+    # creates sixth flight with some values
+    FL6 = flight.Flight()
+    FL6.dep = "Budapest"
+    FL6.arr = "Barcelona"
+    FL6.time_dep = 20*60
+    FL6.time_arr = 23.25*60
+    FL6.passengers = 400
 
     ass1=assignment.Assignment()
     assignment.assign_aircraft(ass1,AC1)
@@ -56,18 +70,19 @@ def createXicaAirline ():
     assignment.assign_flight(ass2,FL3)
     assignment.assign_flight(ass2,FL4)
 
-
-
     # creates the airline
     Xica = airline.Airline()
     Xica.name = "Xica Airline"
-    Xica.assignments.append(ass1),Xica.assignments.append(ass2)
+    Xica.assignments.append(ass1)
+    Xica.assignments.append(ass2)
     airline.add_aircraft(Xica, AC1)
     airline.add_aircraft(Xica, AC2)
     airline.add_operation(Xica, FL1)
     airline.add_operation(Xica, FL2)
     airline.add_operation(Xica, FL3)
     airline.add_operation(Xica, FL4)
+    airline.add_operation(Xica, FL5)
+    airline.add_operation(Xica, FL6)
     return Xica
 
 # main

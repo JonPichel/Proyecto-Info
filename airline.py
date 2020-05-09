@@ -30,22 +30,25 @@ def show_airline(a):
         name = a.name
         aircrafts = a.aircrafts
         operations = a.operations
+        assignments = a.assignments
     except AttributeError:
         print("Wrong parameters. Provide an Airline object.")
         return
     print("Airline information:")
-    print("\tName:", name)
-    print("\tIt has a fleet of", len(aircrafts), "Aircraft:")
+    print("Name:", name)
+    print("It has a fleet of", len(aircrafts), "Aircraft:")
     for a in aircrafts:
         # The end='' tells prevents the print function to insert a newline
-        print('\t' * 2, end='')
+        print('\t', end='')
         aircraft.show_aircraft(a)
-    print("\tOperations today are", str(len(operations)) + ":")
+    print("Operations today are", str(len(operations)) + ":")
     for f in operations:
         # The end='' tells prevents the print function to insert a newline
-        print('\t' * 2, end='')
+        print('\t', end='')
         flight.show_flight(f)
-     assignment.plot_assignments(assignments)
+    for assig in assignments:
+        # The end='' tells prevents the print function to insert a newline
+        assignment.show_assignment(assig)
 
 def add_aircraft(a, ac):
     """ Function add_aircraft (a: Airline(), ac: Aircraft()): Boolean
@@ -58,25 +61,16 @@ def add_aircraft(a, ac):
     Tested by Raúl Criado on April 22nd 2020
     """
     try:
-        n=len(a.aircrafts)      # m and n are used to see if there is no repetition in every single aircraft in a.aircrafts list
-        m=0
         for i in a.aircrafts:   # for loop to see the entire a.aircrafts list
-            if i == None:       # see if the a.aircraft is empty
-                a.aircrafts.append(ac)
-                return True
-            else:
-                if i.callsign != ac.callsign:   # condition for repeated aircraft
-                    m+=1
-        if m==n:                            # See if the aircraft we are trying to add isn't repeated
-            a.aircrafts.append(ac) 
-            return True
-        else:
-            return False       # If it's not repeated it returns True, if it's repeated it returns False 
+            if i.callsign == ac.callsign:   # condition for repeated aircraft
+                return False # If it's repeated it returns False 
+        # If it didn't break the loop, we can add the aircraft
+        a.aircrafts.append(ac)
+        return True
     except AttributeError:
         print("Wrong parameters, please provide an Airline and an Aircraft")
         return False
         
-                
 def add_operation(a,f):
     """ Function add_operation (a: Airline(), f: Flight()): Boolean
     ===================================================
@@ -88,22 +82,12 @@ def add_operation(a,f):
     Tested by Raúl Criado on April 22nd 2020
     """
     try:
-        n=len(a.operations)
-        m=0                                 # m and n are used to see if there is no repetition in every single operation in a.operations list
         for i in a.operations:              # for loop to see the enire a.operations list
-            if i == None:                   # see if the a.operations is empty
-                a.operations.append(f)
-                return True
-            else:
-                if i.dep == f.dep and i.arr == f.arr and i.time_dep == f.time_dep:  # conditions for repeated operation
-                    return False
-                else:
-                    m+=1
-        if m==n:                    # See if the operation we are trying to add isn't repeated
-            a.operations.append(f)
-            return True
-        else:
-            return False        # If it's not repeated it returns True, if it's repeated it returns False
+            if i.dep == f.dep and i.arr == f.arr and i.time_dep == f.time_dep and i.time_arr == f.time_arr:  # conditions for repeated operation
+                return False
+        # If it didn't break the loop, we can add the aircraft
+        a.operations.append(f)
+        return True
     except AttributeError:
         print("Wrong parameters, please provide an Airline and a Flight")
         return False
@@ -161,6 +145,7 @@ def check_operations(a, interval=60):
         if not flight.check_airports(assig.flights):
             print("The airport's order doesn't make sense.")
             return False
+        return True
     
 def plot_flights(a):
     """Function plot_flights (a: Airline()): none
@@ -191,6 +176,7 @@ def plot_assignments(a):
 
 def assign_operations(a):
     # Copy the airline information
+    name = a.name
     aircrafts = a.aircrafts[:]
     flights = a.operations[:]
     assignments = []
@@ -208,10 +194,12 @@ def assign_operations(a):
         else:
             # If the inner for loop finished without breaking, it means that the flight
             # was incompatible with all the assignments
-            print("Flight:", flight.show_flight(f), "could not be assigned.")
+            flight.show_flight(f)
+            print("could not be assigned.")
     # Return the updated airline
     new = Airline()
+    new.name = name
     new.aircrafts = aircrafts
-    new.flights = flights
+    new.operations = flights
     new.assignments = assignments
     return new
