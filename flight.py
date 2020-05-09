@@ -157,7 +157,7 @@ def check_overlap_list(f, vector_flight, interval=60):
     vector_flight: list, a list of Flight objects
     interval: int, minimum number of minutes that must exist between the flights
     Return: bool, False if they don't overlap, True if they do
-    Created by Jonathan Pichel on April 5rd 2020
+    Created by Jonathan Pichel on May 5rd 2020
     """
     for flight in vector_flight:
         if check_overlap(f, flight, interval=interval):
@@ -171,7 +171,7 @@ def check_inner_overlap(vector_flight, interval=60):
     vector_flight: list, a list of Flight objects
     interval: int, minimum number of minutes that must exist between the flights
     Return: bool, True if there's any overlap, False otherwise
-    Created by Jonathan Pichel on April 5rd 2020
+    Created by Jonathan Pichel on May 5rd 2020
     """
     for i in range(len(vector_flight)):
         if check_overlap_list(vector_flight[i], vector_flight[i+1:], interval=interval):
@@ -184,10 +184,11 @@ def plot_flight(f, show=True):
     Plots a flight
     f: Flight, a Flight object
     show: bool, flag to control whether to show the plot or not. True by default.
-    Created by Pol Roca on April 6th 2020
+    Created by Pol Roca on May 6th 2020
+    Tested by Adrià Vaquer on May 9th 2020
     """
     # Plot the flight
-    plt.barh(f"{f.arr}\n{f.dep}", flight_duration(f), left=f.time_dep, color='lightblue')
+    plt.barh(f"{f.dep}\n{f.arr}", flight_duration(f), left=f.time_dep, color='lightblue')
     
     # Plot customization
     # Set the ticks and give them labels

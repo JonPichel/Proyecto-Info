@@ -45,6 +45,7 @@ def show_airline(a):
         # The end='' tells prevents the print function to insert a newline
         print('\t' * 2, end='')
         flight.show_flight(f)
+     assignment.plot_assignments(assignments)
 
 def add_aircraft(a, ac):
     """ Function add_aircraft (a: Airline(), ac: Aircraft()): Boolean

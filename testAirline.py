@@ -1,10 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-# Program to test project phase 1
-import aircraft
-import flight
-import airline
+import aircraft,flight,airline,assignment
 
 def createXicaAirline ():
     """ Function createXicaAirline
@@ -52,9 +46,22 @@ def createXicaAirline ():
     FL4.time_arr = 23*60
     FL4.passengers = 97
 
+    ass1=assignment.Assignment()
+    assignment.assign_aircraft(ass1,AC1)
+    assignment.assign_flight(ass1,FL1)
+    assignment.assign_flight(ass1,FL2)
+    
+    ass2=assignment.Assignment()
+    assignment.assign_aircraft(ass2,AC2)
+    assignment.assign_flight(ass2,FL3)
+    assignment.assign_flight(ass2,FL4)
+
+
+
     # creates the airline
     Xica = airline.Airline()
     Xica.name = "Xica Airline"
+    Xica.assignments.append(ass1),Xica.assignments.append(ass2)
     airline.add_aircraft(Xica, AC1)
     airline.add_aircraft(Xica, AC2)
     airline.add_operation(Xica, FL1)
@@ -64,8 +71,7 @@ def createXicaAirline ():
     return Xica
 
 # main
-print ("Phase1 test program")
+print("Phase1 test program")
 A = createXicaAirline()
 airline.show_airline(A)
-print ("Phase1 test program end")
-
+print("Phase1 test program end")

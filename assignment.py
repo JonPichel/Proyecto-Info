@@ -60,7 +60,7 @@ def assign_aircraft(assig, ac):
     ac: Aircraft, the aircraft that shall be assigned to the assignment
     Created by Adrià Vaquer on May 5th 2020
     """
-    if type(assig) == Assignment and type(ac) == aircraft.Aircraft:
+    try:
         if assig.aircraft == None:
             if assig.flights == []:
                 assig.aircraft = ac
@@ -69,10 +69,10 @@ def assign_aircraft(assig, ac):
                 print("There is a flight already assigned.")
                 return False
         else:
-            print("There is an aircraft already assigned.")
-            return False
-    else:
-        print("Wrong parameters, please provide an Assignment and an Aircraft")
+                print("There is an aircraft already assigned.")
+                return False
+    except AttributeError:
+        print("Wrong Parameters, please provide an Assignment and an Aircraft")
         return False
 
 def assign_flight(assig, f):
