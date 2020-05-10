@@ -109,7 +109,7 @@ def assign_flight(assig, f):
         if assig.flights:
             prev = flight.sort_flights(assig.flights)[-1].arr
             for fl in flight.sort_flights(assig.flights):
-                if fl.time_dep > time_dep:
+                if fl.time_dep < time_dep:
                     break
                 prev = fl.arr
         else:
