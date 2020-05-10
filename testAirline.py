@@ -67,17 +67,19 @@ def createXicaAirline ():
 
     ass1=assignment.Assignment()
     assignment.assign_aircraft(ass1,AC1)
-    assignment.assign_flight(ass1,FL1)
-    assignment.assign_flight(ass1,FL2)
+    assignment.assign_flight(ass1,FL5)
+    assignment.assign_flight(ass1,FL6)
     
     ass2=assignment.Assignment()
     assignment.assign_aircraft(ass2,AC2)
-    assignment.assign_flight(ass2,FL3)
+    assignment.assign_flight(ass2,FL1)
     assignment.assign_flight(ass2,FL4)
+
 
     # creates the airline
     Xica = airline.Airline()
     Xica.name = "Xica Airline"
+    airline.check_operations(Xica)
     Xica.assignments.append(ass1)
     Xica.assignments.append(ass2)
     airline.add_aircraft(Xica, AC1)
@@ -91,7 +93,8 @@ def createXicaAirline ():
     return Xica
 
 # main
-print("Phase1 test program")
+print("Airline Test")
 A = createXicaAirline()
 airline.show_airline(A)
-print("Phase1 test program end")
+print("Airline Test program end")
+airline.plot_assignments(A)
