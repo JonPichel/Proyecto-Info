@@ -38,11 +38,11 @@ def plot_assignment(assig, show=True, title=None):
         plt.grid(which='major', axis='x', color='gray', linestyle='--', linewidth=0.5)
         plt.xlim(0, 60 * 24)
 
+        if title:
+            plt.title(title)
         # Show the plot if asked to
         if show:
             plt.show()
-        if title:
-            plt.title(title)
     except AttributeError:
         print("Wrong Parameters, please provide an Assignment")
         return False

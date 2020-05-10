@@ -1,6 +1,63 @@
 import aircraft,flight,airline,assignment
 
-def createXicaAirline (x,y):
+def createXicaAirline():
+    """ Function createXicaAirline
+    ==============================
+    This function has no input parameters
+    Returns an airline with 2 aircraft and 4 flights
+    """ 
+    # creates first aircraft with some values
+    AC1 = aircraft.Aircraft()
+    AC1.callsign = "EC234"
+    AC1.type = "A320"
+    AC1.seats = 280
+    # creates a second aircraft with other values
+    AC2 = aircraft.Aircraft()
+    AC2.callsign = "EC504"
+    AC2.type = "A321"
+    AC2.seats = 310
+
+    # creates first flight with some values
+    FL1 = flight.Flight()
+    FL1.dep = "Barcelona"
+    FL1.arr = "Budapest"
+    FL1.time_dep = 8*60
+    FL1.time_arr = 11*60
+    FL1.passengers = 54
+    # creates second flight with some values
+    FL2 = flight.Flight()
+    FL2.dep = "Barcelona"
+    FL2.arr = "Istambul"
+    FL2.time_dep = 9*60
+    FL2.time_arr = 12.5*60
+    FL2.passengers = 154
+    # creates third flight with some values
+    FL3 = flight.Flight()
+    FL3.dep = "Istambul"
+    FL3.arr = "Budapest"
+    FL3.time_dep = 17*60
+    FL3.time_arr = 19.25*60
+    FL3.passengers = 140
+    # creates fourth flight with some values
+    FL4 = flight.Flight()
+    FL4.dep = "Budapest"
+    FL4.arr = "Barcelona"
+    FL4.time_dep = 20*60
+    FL4.time_arr = 23*60
+    FL4.passengers = 97
+
+    # creates the airline
+    Xica = airline.Airline()
+    Xica.name = "Xica Airline"
+    airline.add_aircraft(Xica, AC1)
+    airline.add_aircraft(Xica, AC2)
+    airline.add_operation(Xica, FL1)
+    airline.add_operation(Xica, FL2)
+    airline.add_operation(Xica, FL3)
+    airline.add_operation(Xica, FL4)
+    return Xica
+
+def createAirline(x=False, y=False):
     """ Function createXicaAirline
     ==============================
     This function has no input parameters
@@ -23,7 +80,6 @@ def createXicaAirline (x,y):
     AC3.callsign = "EC504"
     AC3.type = "A321"
     AC3.seats = 310
-    
 
     # creates first flight with some values
     FL1 = flight.Flight()
@@ -81,7 +137,7 @@ def createXicaAirline (x,y):
     FL7.time_arr = 20*60
     FL7.passengers = 140
     
-    if y== True:
+    if y == True:
         FL8 = flight.Flight()
         FL8.dep = "Florencia"
         FL8.arr = "Barcelona"
@@ -125,17 +181,8 @@ def createXicaAirline (x,y):
         Xica=airline.assign_operations(Xica)
     return Xica
 
-if __name__=="__main__":
-    # main
-    """    
-    
-    A = createXicaAirline()
-    #airline.check_operations(A)
-    airline.show_airline(A)
-    print("Airline Test program end")
-    """
-    print("Airline Test")
-    print("=" * 5,"PHASE 1 TEST PROGRAM", "=" * 5, "\n")
+if __name__ == "__main__":
+    print("=" * 5, "PHASE 1 TEST PROGRAM", "=" * 5, "\n")
     print("Functions this week:")
     funcs = ["show_airline", "add_aircraft", "add_operation"]
     for f in funcs:
@@ -143,19 +190,19 @@ if __name__=="__main__":
     
     input("\n - PRESS ENTER TO TEST SHOW_AIRLINE, ADD_AIRCRAFT ADD_OPERATION:")
     
-    A=createXicaAirline(False,False)
+    A = createAirline(False,False)
     airline.show_airline(A)
     
-    print("=" * 5,"PHASE 1 TEST PROGRAM END", "=" * 5, "\n")
-    print("=" * 5,"PHASE 2 TEST PROGRAM", "=" * 5, "\n")
+    print("=" * 5, "PHASE 1 TEST PROGRAM END", "=" * 5, "\n")
+    print("=" * 5, "PHASE 2 TEST PROGRAM", "=" * 5, "\n")
     print("Functions this week:")
     funcs = ["show_airline(updated)", "plot_flights", "assign_operations", "plot_assignments", "insert_delay", "check_operations"]
     for f in funcs:
         print(f"\t{f}")
     
     input("\n - PRESS ENTER TO TEST SHOW_AIRLINE(UPDATED) and ASSIGN_OPERATIONS FUNCTIONS:")
-    A=createXicaAirline(True,False)
-    B=airline.assign_operations(A)
+    A = createAirline(True, False)
+    B = airline.assign_operations(A)
     airline.show_airline(B)
     
     input("\n - PRESS ENTER TO TEST PLOT_FLIGHTS FUNCTION:")
@@ -163,16 +210,16 @@ if __name__=="__main__":
     input("\n - PRESS ENTER TO TEST PLOT_ASSIGNMENTS FUNCTION:")
     airline.plot_assignments(B)
     input("\n - PRESS ENTER TO TEST INSERT_DELAY FUNCTION:")
-    delay=[30, -30, 50.54, 180, -200, 60000]
+    delay = [30, -30, 50.54, 180, -200, 60000]
     for i in delay:
         if airline.insert_delay(B,"Barcelona",8*60,i):
             print("The flight can be delayed")
         else:
             print("Couldn't delay flight")
     input("\n - PRESS ENTER TO TEST CHECK_OPERATIONS FUNCTION:")
-    C=createXicaAirline(True,True)
+    C=createAirline(True,True)
     for i in C.operations:
         if airline.check_operations(B):
-            print("The flight",i.dep,"-",i.arr,"can be allocated")
+            print("The flight", i.dep,"-", i.arr, "can be allocated")
         else:
-            print("The flight",i.dep,"-",i.arr,"can not be allocated")
+            print("The flight", i.dep, "-", i.arr, "can not be allocated")

@@ -74,11 +74,11 @@ assignment.show_assignment(ass2)
 
 input("\n - PRESS ENTER TO TEST PLOT_ASSIGNMENT:")
 print("Plotting ass1...")
-assignment.plot_assignment(ass1)
+assignment.plot_assignment(ass1, title='ass1')
 
 print("Plotting ass2...")
-assignment.plot_assignment(ass2)
+assignment.plot_assignment(ass2, title='ass2')
 
 input("\n - PRESS ENTER TO TEST PLOT_ASSIGNMENTS:")
 print("Plotting ass1 and ass2 together...")
-assignment.plot_assignments([ass1, ass2])
+assignment.plot_assignments([ass1, ass2], title="ass1 and ass2 together")

@@ -153,10 +153,9 @@ def check_operations(a, interval=60):
 def plot_flights(a, title=None):
     """Function plot_flights (a: Airline()): none
     ==========================================
-    Plots the list of flight operation of an airline
+    Plots the list of flight operations of an airline
     a: object of class Airline, the airline which function shall plot the operations
     title: str, if provided, it will set the title of the plot
-    Return: none
     Created by Adrià Vaquer on May 5th 2020
     Tested by Raúl Criado on May 6th 2020
     """
