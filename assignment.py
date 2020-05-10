@@ -112,10 +112,6 @@ def assign_flight(assig, f):
                 if fl.time_dep > time_dep:
                     break
                 prev = fl.arr
-            # Especial case, If it didn't break the loop, then our flight will be the last of the day
-            else:
-                if flight.sort_flights(assig.flights)[0].dep != f.arr:
-                    return False
         else:
             prev = f.dep
 
@@ -124,6 +120,11 @@ def assign_flight(assig, f):
                 if prev == f.dep:
                     assig.flights.append(f)
                     return True
+                else:
+                    print("airports")
+            else:
+                print("overlap")
+        else: print("fit")
         return False
     except AttributeError:
         print("Wrong Parameters, please provide an Assignment and a Flight")

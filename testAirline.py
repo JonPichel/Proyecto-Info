@@ -45,53 +45,59 @@ def createXicaAirline ():
     FL4 = flight.Flight()
     FL4.dep = "Budapest"
     FL4.arr = "Barcelona"
-    FL4.time_dep = 12*60
-    FL4.time_arr = 15*60
+    FL4.time_dep = 20*60
+    FL4.time_arr = 23*60
     FL4.passengers = 97
-
-    # creates fifth flight with some values
-    FL5 = flight.Flight()
-    FL5.dep = "Barcelona"
-    FL5.arr = "Vigo"
-    FL5.time_dep = 20.75*60
-    FL5.time_arr = 23*60
-    FL5.passengers = 113
-
-    # creates sixth flight with some values
-    FL6 = flight.Flight()
-    FL6.dep = "Vigo"
-    FL6.arr = "Barcelona"
-    FL6.time_dep = 4*60
-    FL6.time_arr = 5.25*60
-    FL6.passengers = 278
-
-    ass1=assignment.Assignment()
-    assignment.assign_aircraft(ass1,AC1)
-    assignment.assign_flight(ass1,FL1)
-    assignment.assign_flight(ass1,FL2)
-    
-    ass2=assignment.Assignment()
-    assignment.assign_aircraft(ass2,AC2)
-    assignment.assign_flight(ass2,FL3)
-    assignment.assign_flight(ass2,FL4)
 
     # creates the airline
     Xica = airline.Airline()
     Xica.name = "Xica Airline"
-    Xica.assignments.append(ass1)
-    Xica.assignments.append(ass2)
     airline.add_aircraft(Xica, AC1)
     airline.add_aircraft(Xica, AC2)
     airline.add_operation(Xica, FL1)
     airline.add_operation(Xica, FL2)
     airline.add_operation(Xica, FL3)
     airline.add_operation(Xica, FL4)
-    airline.add_operation(Xica, FL5)
-    airline.add_operation(Xica, FL6)
     return Xica
 
-# main
-print("Phase1 test program")
-A = createXicaAirline()
-airline.show_airline(A)
-print("Phase1 test program end")
+if __name__ == '__main__':
+    # main
+    print("Phase1 test program")
+    A = createXicaAirline()
+    airline.show_airline(A)
+    print("Phase1 test program end")
+
+    ac1 = aircraft.Aircraft()
+    ac1.callsign = 'AJ320'
+    ac1.type = 'A320'
+    ac1.seats = 280
+
+    f1 = flight.Flight()
+    f1.dep = "Barcelona"
+    f1.arr = "Budapest"
+    f1.time_dep = 8*60
+    f1.time_arr = 11*60
+    f1.passengers = 20
+
+    f2 = flight.Flight()
+    f2.dep = "Budapest"
+    f2.arr = "Florencia"
+    f2.time_dep = 13*60
+    f2.time_arr = 16*60
+    f2.passengers = 30
+
+    f3 = flight.Flight()
+    f3.dep = "Florencia"
+    f3.arr = "Barcelona"
+    f3.time_dep = 18*60
+    f3.time_arr = 20*60
+    f3.passengers = 10
+
+    ass = assignment.Assignment()
+
+    print(assignment.assign_aircraft(ass, ac1))
+    print(assignment.assign_flight(ass, f1))
+    print(assignment.assign_flight(ass, f2))
+    print(assignment.assign_flight(ass, f3))
+
+    assignment.plot_assignment(ass)

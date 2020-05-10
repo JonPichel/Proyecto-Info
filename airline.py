@@ -205,7 +205,7 @@ def assign_operations(a):
         assig.aircraft = aircrafts[i]
         assignments.append(assig)
     for i in range(len(flights)):
-        f = flights[i]
+        f = flight.sort_flights(flights)[i]
         for j in range(len(assignments)):
             assig = assignments[j]
             if assignment.assign_flight(assig, f):
