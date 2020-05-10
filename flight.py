@@ -241,8 +241,8 @@ def plot_flights(vf, title=None):
             # We use plot_assignment with show set as False.
             plot_flight(flight, show=False, title=title)
         
-            # We show the plot once all of them are plotted.
-            plt.show()
+        # We show the plot once all of them are plotted.
+        plt.show()
     except AttributeError:
         print("Wrong Parameters, please provide a Flight list")
         return False
