@@ -109,7 +109,7 @@ def assign_flight(assig, f):
         if assig.flights:
             prev = flight.sort_flights(assig.flights)[-1].arr
             for fl in flight.sort_flights(assig.flights):
-                if fl.time_dep > time_dep:
+                if fl.time_dep < time_dep:
                     break
                 prev = fl.arr
             # Especial case, If it didn't break the loop, then our flight will be the last of the day
