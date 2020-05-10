@@ -24,6 +24,7 @@ def createXicaAirline ():
     FL1.time_dep = 8*60
     FL1.time_arr = 11*60
     FL1.passengers = 54
+
     # creates second flight with some values
     FL2 = flight.Flight()
     FL2.dep = "Barcelona"
@@ -31,6 +32,7 @@ def createXicaAirline ():
     FL2.time_dep = 9*60
     FL2.time_arr = 12.5*60
     FL2.passengers = 154
+
     # creates third flight with some values
     FL3 = flight.Flight()
     FL3.dep = "Istambul"
@@ -38,27 +40,30 @@ def createXicaAirline ():
     FL3.time_dep = 17*60
     FL3.time_arr = 19.25*60
     FL3.passengers = 140
+
     # creates fourth flight with some values
     FL4 = flight.Flight()
     FL4.dep = "Budapest"
     FL4.arr = "Barcelona"
-    FL4.time_dep = 20*60
-    FL4.time_arr = 23*60
+    FL4.time_dep = 12*60
+    FL4.time_arr = 15*60
     FL4.passengers = 97
+
     # creates fifth flight with some values
     FL5 = flight.Flight()
-    FL5.dep = "Budapest"
-    FL5.arr = "Barcelona"
+    FL5.dep = "Barcelona"
+    FL5.arr = "Vigo"
     FL5.time_dep = 20.75*60
     FL5.time_arr = 23*60
     FL5.passengers = 113
+
     # creates sixth flight with some values
     FL6 = flight.Flight()
-    FL6.dep = "Budapest"
+    FL6.dep = "Vigo"
     FL6.arr = "Barcelona"
-    FL6.time_dep = 20*60
-    FL6.time_arr = 23.25*60
-    FL6.passengers = 400
+    FL6.time_dep = 4*60
+    FL6.time_arr = 5.25*60
+    FL6.passengers = 278
 
     ass1=assignment.Assignment()
     assignment.assign_aircraft(ass1,AC1)

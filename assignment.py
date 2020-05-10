@@ -14,7 +14,7 @@ class Assignment:
         self.aircraft = None
         self.flights = []
     
-def plot_assignment(assig, show=True):
+def plot_assignment(assig, show=True, title=None):
     """ Function plot_assignment (assig: Assignment, show: bool)
     =================================================
     Plots the flights of an Assignment
@@ -38,8 +38,10 @@ def plot_assignment(assig, show=True):
     # Show the plot if asked to
     if show:
         plt.show()
+    if title:
+        plt.title(title)
 
-def plot_assignments(vector_assig):
+def plot_assignments(vector_assig, title=None):
     """Function plot_assignments (vector_assig: list of Assignments)
     ===================================================
     Plots a list of assignments
@@ -49,7 +51,7 @@ def plot_assignments(vector_assig):
     """
     for assig in vector_assig:
         # We use plot_assignment with show set as False.
-        plot_assignment(assig, show=False)
+        plot_assignment(assig, show=False, title=title)
     
     # We show the plot once all of them are plotted.
     plt.show()
@@ -88,16 +90,27 @@ def assign_flight(assig, f):
     Created by Jonathan Pichel on April 5rd 2020
     """
     time_dep = f.time_dep
-    prev = f.dep
-    for fl in flight.sort_flights(assig.flights):
-        prev = fl.arr
-        if fl.time_dep > time_dep:
-            break
+    # If it is the first flight, compare it with the last flight
+    # Especial case, Check if the list is empty first
+    if assig.flights:
+        prev = flight.sort_flights(assig.flights)[-1].arr
+        for fl in flight.sort_flights(assig.flights):
+            if fl.time_dep > time_dep:
+                break
+            prev = fl.arr
+        # Especial case, If it didn't break the loop, then our flight will be the last of the day
+        else:
+            if flight.sort_flights(assig.flights)[0].dep != f.arr:
+                return False
+    else:
+        prev = f.dep
 
-    if flight.fits_flight_in_aircraft(f, assig.aircraft) and not flight.check_overlap_list(f, assig.flights):
-        if prev == f.dep:
-            assig.flights.append(f)
-            return True
+    if flight.fits_flight_in_aircraft(f, assig.aircraft):
+        if not flight.check_overlap_list(f, assig.flights):
+            if prev == f.dep:
+                print(prev, f.dep)
+                assig.flights.append(f)
+                return True
     return False
 
 def show_assignment(assig):

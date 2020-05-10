@@ -147,7 +147,7 @@ def check_operations(a, interval=60):
             return False
         return True
     
-def plot_flights(a):
+def plot_flights(a, title=None):
     """Function plot_flights (a: Airline()): none
     ==========================================
     Plots the list of flight operation of an airline
@@ -157,12 +157,12 @@ def plot_flights(a):
     Tested by Raúl Criado on May 6th 2020
     """
     if type(a) == Airline:
-        flight.plot_flights(a.operations)
+        flight.plot_flights(a.operations, title=title)
     else:
         print("Wrong Parameters, please provide an Airline")
 
 
-def plot_assignments(a):
+def plot_assignments(a, title=None):
     """Function plot_assignments (a: airline)
     ===================================================
     Plots a list of assignments
@@ -170,7 +170,7 @@ def plot_assignments(a):
     Created by Raúl Criado on May 6th 2020
     Tested by Jonathan Pichel on May 9th 2020
     """
-    assignment.plot_assignments(a.assignments)
+    assignment.plot_assignments(a.assignments, title=title)
     # We call the plot_assignments function to add it to the class airline
 
 

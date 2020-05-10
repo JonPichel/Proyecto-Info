@@ -143,8 +143,8 @@ def check_overlap(f1, f2, interval=60):
     Return: bool, False if they don't overlap, True if they do
     Created by Jonathan Pichel on April 5rd 2020
     """
-    if ((f1.time_dep < f2.time_dep - interval and f1.time_arr < f2.time_dep - interval) or
-        (f1.time_dep > f2.time_arr + interval and f1.time_arr > f2.time_arr + interval)):
+    if ((f1.time_dep <= f2.time_dep - interval and f1.time_arr <= f2.time_dep - interval) or
+        (f1.time_dep >= f2.time_arr + interval and f1.time_arr >= f2.time_arr + interval)):
         return False
     else:
         return True
@@ -178,7 +178,7 @@ def check_inner_overlap(vector_flight, interval=60):
             return True
     return False
 
-def plot_flight(f, show=True):
+def plot_flight(f, show=True, title=None):
     """ Function plot_flight (f: Flight, show: bool)
     =================================================
     Plots a flight
@@ -202,17 +202,19 @@ def plot_flight(f, show=True):
     # Show the plot if asked to
     if show:
         plt.show()
+    if title:
+        plt.title(title)
 
-def plot_flights(vf):
+def plot_flights(vf, title=None):
     """Function plot_flights (vf: list of Flights)
     ===================================================
     Plots a list of flights
     vf: list, list of Flights to be plotted
     Created by Jonathan Pichel on May 5th 2020
     """
-    for flight in vf:
+    for flight in sort_flights(vf):
         # We use plot_assignment with show set as False.
-        plot_flight(flight, show=False)
+        plot_flight(flight, show=False, title=title)
     
     # We show the plot once all of them are plotted.
     plt.show()
@@ -225,15 +227,9 @@ def sort_flights(vf):
     Returns: list, a list of flights ordered by time_dep
     Created by Jonathan Pichel on May 9th 2020
     """
-    dept = {}
-    res = []
-    for i, f in enumerate(vf):
-        dept[f.time_dep] = i
+    # I use the sorted builtin to sort the flights by time of departure
+    return sorted(vf, key=lambda f: f.time_dep)
     
-    for x in sorted(dept):
-        res.append(vf[dept[x]])
-    return res
-
 def check_airports(vf):
     """Function check_airports (vf: list of Flights)
     ===================================================
@@ -250,5 +246,7 @@ def check_airports(vf):
                 # Return False
                 return False
         prev = f.arr
+    if sort_flights(vf)[-1].arr != sort_flights(vf)[0].dep:
+        return False
     # Else, return True
     return True
