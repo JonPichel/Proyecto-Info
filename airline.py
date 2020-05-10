@@ -99,7 +99,7 @@ def insert_delay(a, depAp, depTm, d):
     a: Airline
     depAp: string, name of the airport
     depTm: int, time of departure
-    d: object of class Airline, integer
+    d: int, time delayed in minutes
     Return: True if the flight exists and update the time departure adding the delay.
     Created by Raul Criado on May 1st 2020
     Tested by Jonathan Pichel on May 4th 2020
