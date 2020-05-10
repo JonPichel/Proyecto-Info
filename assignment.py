@@ -21,24 +21,29 @@ def plot_assignment(assig, show=True):
     assig: Assignment, an Assigment object
     show: bool, flag to control whether to show the plot or not. True by default.
     Created by Jonathan Pichel on April 4rd 2020
+    Tested by Pol Roca on May 9th 2020
     """
-    # Plot every flight
-    for f in assig.flights:
-        plt.barh(assig.aircraft.callsign, flight.flight_duration(f), left=f.time_dep, color='lightblue')
+    try:
+        # Plot every flight
+        for f in assig.flights:
+            plt.barh(assig.aircraft.callsign, flight.flight_duration(f), left=f.time_dep, color='lightblue')
     
-    # Plot customization
-    # Set the ticks and give them labels
-    x_ticks = [60 * i for i in range(0, 24)]         # Only set ticks every three hours
-    x_labels = list(map(flight.format_time, x_ticks))   # List of strings, formatted with flight.format_time()
-    plt.xticks(x_ticks, x_labels)
-    plt.tick_params(which='major', axis='x', rotation=45, labelsize='x-small')
-    plt.grid(which='major', axis='x', color='gray', linestyle='--', linewidth=0.5)
-    plt.xlim(0, 60 * 24)
+        # Plot customization
+        # Set the ticks and give them labels
+        x_ticks = [60 * i for i in range(0, 24)]         # Only set ticks every three hours
+        x_labels = list(map(flight.format_time, x_ticks))   # List of strings, formatted with flight.format_time()
+        plt.xticks(x_ticks, x_labels)
+        plt.tick_params(which='major', axis='x', rotation=45, labelsize='x-small')
+        plt.grid(which='major', axis='x', color='gray', linestyle='--', linewidth=0.5)
+        plt.xlim(0, 60 * 24)
 
-    # Show the plot if asked to
-    if show:
-        plt.show()
-
+        # Show the plot if asked to
+        if show:
+            plt.show()
+    except AttributeError:
+        print("Wrong Parameters, please provide an Assignment")
+        return False
+    
 def plot_assignments(vector_assig):
     """Function plot_assignments (vector_assig: list of Assignments)
     ===================================================
@@ -47,13 +52,17 @@ def plot_assignments(vector_assig):
     Created by Adrià Vaquer on May 5th 2020
     Tested by Raúl Criado on May 6th 2020
     """
-    for assig in vector_assig:
-        # We use plot_assignment with show set as False.
-        plot_assignment(assig, show=False)
+    try:
+        for assig in vector_assig:
+            # We use plot_assignment with show set as False.
+            plot_assignment(assig, show=False)
     
-    # We show the plot once all of them are plotted.
-    plt.show()
-
+        # We show the plot once all of them are plotted.
+        plt.show()
+    except AttributeError:
+        print("Wrong Parameters, please provide an Assignment")
+        return False
+    
 def assign_aircraft(assig, ac):
     """Function assign_aircraft (assig: Assignment, ac: Aircraft): bool
     ===================================================
@@ -61,6 +70,7 @@ def assign_aircraft(assig, ac):
     assig: Assignment, the assignment which aircraft shall be assigned
     ac: Aircraft, the aircraft that shall be assigned to the assignment
     Created by Adrià Vaquer on May 5th 2020
+    Tested by Raúl Criado on May 8th 2020
     """
     try:
         if assig.aircraft == None:
@@ -86,20 +96,25 @@ def assign_flight(assig, f):
     f: Flight, a Flight object
     Return: bool, True if it was possible to add the flight, False otherwise
     Created by Jonathan Pichel on April 5rd 2020
+    Tested by Pol Roca on May 9th 2020
     """
-    time_dep = f.time_dep
-    prev = f.dep
-    for fl in flight.sort_flights(assig.flights):
-        prev = fl.arr
-        if fl.time_dep > time_dep:
-            break
+    try:
+        time_dep = f.time_dep
+        prev = f.dep
+        for fl in flight.sort_flights(assig.flights):
+            prev = fl.arr
+            if fl.time_dep > time_dep:
+                break
 
-    if flight.fits_flight_in_aircraft(f, assig.aircraft) and not flight.check_overlap_list(f, assig.flights):
-        if prev == f.dep:
-            assig.flights.append(f)
-            return True
-    return False
-
+        if flight.fits_flight_in_aircraft(f, assig.aircraft) and not flight.check_overlap_list(f, assig.flights):
+            if prev == f.dep:
+                assig.flights.append(f)
+                return True
+        return False
+    except AttributeError:
+        print("Wrong Parameters, please provide an Assignment")
+        return False
+    
 def show_assignment(assig):
     """ Function show_assignment (assig: Assignment)
     =================================================
@@ -118,3 +133,4 @@ def show_assignment(assig):
 
     except AttributeError:
         print("Wrong parameters, introduce a valid assignment")
+        return False
