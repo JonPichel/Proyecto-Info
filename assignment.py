@@ -120,11 +120,6 @@ def assign_flight(assig, f):
                 if prev == f.dep:
                     assig.flights.append(f)
                     return True
-                else:
-                    print("airports")
-            else:
-                print("overlap")
-        else: print("fit")
         return False
     except AttributeError:
         print("Wrong Parameters, please provide an Assignment and a Flight")

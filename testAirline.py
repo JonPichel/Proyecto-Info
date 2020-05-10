@@ -11,6 +11,7 @@ def createXicaAirline ():
     AC1.callsign = "EC234"
     AC1.type = "A320"
     AC1.seats = 280
+
     # creates a second aircraft with other values
     AC2 = aircraft.Aircraft()
     AC2.callsign = "EC504"
