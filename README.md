@@ -1,7 +1,6 @@
-# Proyecto Informática
-Proyecto Informática 2020
+# Proyecto Informática 2020
 
-Charlie 03
+## Charlie 03
 Raúl Criado, Adrià Vaquer, Jonathan Pichel, Pol Roca.
 
 · Sesión 1 - 16/04/2020 - Mediante Discord - Todos los miembros presentes
