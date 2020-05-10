@@ -102,7 +102,7 @@ def insert_delay(a, depAp, depTm, d):
     d: object of class Airline, integer
     Return: True if the flight exists and update the time departure adding the delay.
     Created by Raul Criado on May 1st 2020
-    Tested by Jonathan Pichel Carrera on May 4th 2020
+    Tested by Jonathan Pichel on May 4th 2020
     """
     try:
         flights = a.operations
@@ -129,23 +129,27 @@ def check_operations(a, interval=60):
     Created by Raul Criado on May 1st 2020
     Tested by Jonathan Pichel on May 9th 2020
     """
-    for assig in a.assignments:
-        # Check if all the flights fit in the aircraft
-        for f in assig.flights:
-            if not flight.fits_flight_in_aircraft(f, assig.aircraft):
-                print("Flight:", flight.show_flight(f), "doesn't fit in the aircraft", aircraft.show_aircraft(assig.aircraft))
-                return False
+    try:
+        for assig in a.assignments:
+            # Check if all the flights fit in the aircraft
+            for f in assig.flights:
+                if not flight.fits_flight_in_aircraft(f, assig.aircraft):
+                    print("Flight:", flight.show_flight(f), "doesn't fit in the aircraft", aircraft.show_aircraft(assig.aircraft))
+                    return False
 
-        # Check if they are adequately spaced in time
-        if flight.check_inner_overlap(assig.flights, interval=interval):
-            print("Flights overlap in time.")
-            return False
+            # Check if they are adequately spaced in time
+            if flight.check_inner_overlap(assig.flights, interval=interval):
+                print("Flights overlap in time.")
+                return False
         
-        # Check if the airports' order is logical
-        if not flight.check_airports(assig.flights):
-            print("The airport's order doesn't make sense.")
-            return False
-        return True
+            # Check if the airports' order is logical
+            if not flight.check_airports(assig.flights):
+                print("The airport's order doesn't make sense.")
+                return False
+            return True
+    except AttributeError:
+        print("Wrong Parameters.")
+        return False
     
 def plot_flights(a):
     """Function plot_flights (a: Airline()): none
@@ -156,11 +160,14 @@ def plot_flights(a):
     Created by Adrià Vaquer on May 5th 2020
     Tested by Raúl Criado on May 6th 2020
     """
-    if type(a) == Airline:
-        flight.plot_flights(a.operations)
-    else:
-        print("Wrong Parameters, please provide an Airline")
-
+    try:
+        if type(a) == Airline:
+            flight.plot_flights(a.operations)
+        else:
+            print("Wrong Parameters, please provide an Airline")
+    except AttributeError:
+        print("Wrong Parameters, please provide a Flight")
+        return False
 
 def plot_assignments(a):
     """Function plot_assignments (a: airline)
@@ -170,16 +177,31 @@ def plot_assignments(a):
     Created by Raúl Criado on May 6th 2020
     Tested by Jonathan Pichel on May 9th 2020
     """
-    assignment.plot_assignments(a.assignments)
-    # We call the plot_assignments function to add it to the class airline
-
+    try:
+        assignment.plot_assignments(a.assignments)
+        # We call the plot_assignments function to add it to the class airline
+    except AttributeError:
+        print("Wrong Parameters, please provide an Assignment")
+        return False
 
 def assign_operations(a):
-    # Copy the airline information
-    name = a.name
-    aircrafts = a.aircrafts[:]
-    flights = a.operations[:]
-    assignments = []
+    """Function assign_operations (a: airline)
+    ===================================================
+    Allocates the flights to each aircraft of the fleet
+    a: object of class airline
+    The function keeps on assigning even if it founds an incompatibility, in that case it prints a message informing about the flight that cannot be assigned
+    Created by Jonathan Pichel on May 9th 2020
+    Tested by Pol Roca on May 9th 2020
+    """
+    try:
+        # Copy the airline information
+        name = a.name
+        aircrafts = a.aircrafts[:]
+        flights = a.operations[:]
+        assignments = []
+    except AttributeError:
+        print("Wrong Parameters, please provide an Assignment, an Aircraft and a Flight")
+        return False
     # Create an assignment for each aircraft
     for i in range(len(aircrafts)):
         assig = assignment.Assignment()
