@@ -115,7 +115,6 @@ def insert_delay(a, depAp, depTm, d):
         print("Wrong parameters.")
         return False
 
-
 def check_operations(a, interval=60):
     """ Function check_operations(a)
     ==================================================
@@ -156,6 +155,7 @@ def plot_flights(a, title=None):
     ==========================================
     Plots the list of flight operation of an airline
     a: object of class Airline, the airline which function shall plot the operations
+    title: str, if provided, it will set the title of the plot
     Return: none
     Created by Adrià Vaquer on May 5th 2020
     Tested by Raúl Criado on May 6th 2020
@@ -165,12 +165,12 @@ def plot_flights(a, title=None):
     else:
         print("Wrong Parameters, please provide an Airline")
 
-
 def plot_assignments(a, title=None):
     """Function plot_assignments (a: airline)
     ===================================================
     Plots a list of assignments
     a: object of class airline
+    title: str, if provided, it will set the title of the plot
     Created by Raúl Criado on May 6th 2020
     Tested by Jonathan Pichel on May 9th 2020
     """

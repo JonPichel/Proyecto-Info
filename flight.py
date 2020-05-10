@@ -203,6 +203,7 @@ def plot_flight(f, show=True, title=None):
     Plots a flight
     f: Flight, a Flight object
     show: bool, flag to control whether to show the plot or not. True by default.
+    title: str, if provided it will set the title of the plot
     Created by Pol Roca on May 6th 2020
     Tested by Adrià Vaquer on May 9th 2020
     """
@@ -233,6 +234,7 @@ def plot_flights(vf, title=None):
     ===================================================
     Plots a list of flights
     vf: list, list of Flights to be plotted
+    title: str, if provided it will set the title of the plot
     Created by Jonathan Pichel on May 5th 2020
     Tested by Pol Roca on May 9th 2020
     """

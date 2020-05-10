@@ -20,6 +20,7 @@ def plot_assignment(assig, show=True, title=None):
     Plots the flights of an Assignment
     assig: Assignment, an Assigment object
     show: bool, flag to control whether to show the plot or not. True by default.
+    title: str, if provided it will set the title of the plot
     Created by Jonathan Pichel on April 4rd 2020
     Tested by Pol Roca on May 9th 2020
     """
@@ -51,6 +52,7 @@ def plot_assignments(vector_assig, title=None):
     ===================================================
     Plots a list of assignments
     vector_assig: list, list of Assignments to be plotted
+    title: str, if provided it will set the title of the plot
     Created by Adrià Vaquer on May 5th 2020
     Tested by Raúl Criado on May 6th 2020
     """
