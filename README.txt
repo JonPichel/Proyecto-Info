@@ -32,7 +32,7 @@ Raúl Criado, Adrià Vaquer, Jonathan Pichel, Pol Roca.
 	- 11:05 --> Se inicia la reunión
 	- 11:30 --> Se crea classAssignment
 	- 11:40 --> Se finalize classAssignment
-	- 11:41 --> Se reparten las funciones de la Phase 2 (resultan 3 para cada miembro del grupo
+	- 11:41 --> Se reparten las funciones de la Phase 2 (resultan 3 para cada miembro del grupo)
 		- Raúl: plot_assignments(a), insert_delay(a, depAp, depTm, d) y check_operations(a)
 		- Jonathan: plot_assignment(assig), plot_flights(vf) y assign_flight(assig, f)
 		- Adrià: assign_aircraft(assig, ac), plot_assignments(vector_assig) y plot_flights(a)
@@ -53,19 +53,10 @@ Raúl Criado, Adrià Vaquer, Jonathan Pichel, Pol Roca.
 	- 19:12 --> Se cierra la sesión
 
  * Sesión 6 - 11/05/2020 - Mediante Discord - Todos los miembros presentes
-        - Jonathan:
-                - convert_time(hhmm)
-                - write_day_plan(a, f)
-                - read_airports(f)
-        - Adrià:
-                - search_airport_index(v, s)
-                - read_flights(f)
-                - calculate_fee(ap, t)
-        - Pol:
-                - read_airline(f)
-                - read_aircrafts(f)
-                - read_airport_costs(v, f)
-        - Raúl:
-                - calculate_day_costs(a, vp)
-                - set_ap_info(ap, s1, s2, s3)
-                - set_costs(ap, c1, c2, c3)
+	- 16:10 --> Se inicia la reunión
+	- 16:14 --> Se reparten las funciones de la Phase 3 (resultan 3 para cada miembro del grupo)
+       		- Jonathan: convert_time(hhmm), write_day_plan(a, f) y read_airports(f)
+        	- Adrià: search_airport_index(v, s), read_flights(f) y calculate_fee(ap, t)
+        	- Pol: read_airline(f), read_aircrafts(f) y read_airport_costs(v, f)
+        	- Raúl: calculate_day_costs(a, vp), set_ap_info(ap, s1, s2, s3), set_costs(ap, c1, c2, c3)
+	- 16:24 --> Se cierra la sesión
