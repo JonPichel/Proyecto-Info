@@ -25,7 +25,7 @@ def set_ap_info(ap, s1, s2, s3):
         ap.location = s3
             
     except AttributeError:
-        print("Wrong parameters. Provide an Airline object.")
+        print("Wrong parameters. Provide an Airport object.")
         return False
 
 
@@ -45,5 +45,5 @@ def set_costs(ap, c1, c2, c3):
         ap.cost_per_hour = c3
             
     except AttributeError:
-        print("Wrong parameters. Provide an Airline object.")
+        print("Wrong parameters. Provide an Airport object.")
         return False
