@@ -18,10 +18,11 @@ class Flight:
         self.time_arr = 0
         self.passengers = 0
 
-def format_time(t):
+def format_time(t, colon=True):
     """ Function format_time (t: int): str
     ==================================================
     t: integer, the number of minutes from midnight
+    colon: bool, if False it will use the format HHMM instead
     Return: str, time in HH:MM format
     Created by Jonathan Pichel and Raúl Criado on April 18th 2020
     Tested by Raúl Criado and Jonathan Pichel on April 19th 2020
@@ -39,11 +40,38 @@ def format_time(t):
             hours %= 24
     
         # We use string formatting to avoid unnecessary code
-        return f"{hours:02}:{mins:02}"
+        if colon:
+            return f"{hours:02}:{mins:02}"
+        else:
+            return f"{hours:02}{mins:02}"
     except AttributeError:
         print("Wrong Parameters, provide an integer")
         return False
     
+def convert_time(hhmm):
+    """Function convert_time (hhmm: str)
+    ===================================================
+    Given a string with a time in HHMM format, it converts it to our minutes from midnight format
+    hhmm: str, time in HHMM format
+    Returns: the time in number of minutes since midnight
+    Created by Jonathan Pichel on May 11th 2020
+    """
+    try:
+        # We use lstrip to remove the starting zeros in case
+        # there is one, to avoid an invalid literal error
+        hours = int(hhmm[:2].lstrip('0'))
+        mins = int(hhmm[2:].lstrip('0'))
+    except IndexError:
+        # We pass here because we want to print the same message in both errors
+        pass
+    except ValueError:
+        # This will be printed if there is an IndexError too
+        print("Wrong data format. Provide a hour in HHMM format.")
+        return
+
+    # Return the number of minutes
+    return hours * 60 + mins
+
 def show_flight(f):
     """ Function show_flight(f: Flight)
     ==================================================
@@ -290,3 +318,6 @@ def check_airports(vf):
     except AttributeError:
         print("Wrong Parameters, please provide a list of Flights")
         return
+
+if __name__ == '__main__':
+    print(convert_time("hell"))

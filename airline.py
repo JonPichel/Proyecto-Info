@@ -185,7 +185,6 @@ def assign_operations(a):
     ===================================================
     Allocates the flights to each aircraft of the fleet
     a: object of class airline
-    The function keeps on assigning even if it founds an incompatibility, in that case it prints a message informing about the flight that cannot be assigned
     Created by Jonathan Pichel on May 9th 2020
     Tested by Pol Roca on May 9th 2020
     """
@@ -221,3 +220,23 @@ def assign_operations(a):
     new.operations = flights
     new.assignments = assignments
     return new
+
+def write_day_plan(a, f):
+    """Function write_day_plan (a: airline, f: str): bool
+    ===================================================
+    Reads from a file that contains the information about some airports, and creates them
+    Writes the information about the assignments and operations of the day of an airline to a file.
+    f: str, name of the file where data is stored
+    Returns: list containing the airports that were created
+    Created by Jonathan Pichel on May 11th 2020
+    """
+    try:
+        output = open('f', 'w')
+    except:
+        return
+    
+    output.write(f"Today operations of {a.name}\n\n")
+    for assig in a.assignments:
+        output.write(assignment.write_assignment(assig))
+    
+    output.close()

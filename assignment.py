@@ -144,3 +144,17 @@ def show_assignment(assig):
     except AttributeError:
         print("Wrong parameters, introduce a valid assignment")
         return False
+
+def write_assignment(assig):
+    """ Function show_assignment (assig: Assignment): str
+    =================================================
+    Returns the info about an assignment in string format, to be stored in a file
+    assig: Assignment, an Assignment object
+    Return: str, Assignment data properly formatted
+    Created by Jonathan Pichel on April 11th 2020
+    """
+    string = f"Flights assigned to aircraft {assig.aircraft.callsign} are:\n"
+    for f in assig.flights:
+        # We use format_time with colon set to true
+        string += f"\t{flight.format_time(f.time_dep, colon=False)} {flight.format_time(f.time_arr, colon=False)}"
+        string += f" {f.dep} {f.arr} {f.passengers}\n"

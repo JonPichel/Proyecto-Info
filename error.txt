@@ -1,0 +1,11 @@
+AIRP CoordinateLongitude,Latitude Description
+BIKF -22.6144444444,63.9869444444 Reykjavik-Keflavik Airport, Iceland
+EFHK 23.9813888889,60.2975000000 Helsinki Airport, Finland
+EKAH 10.7919416667,56.2879527833 Aarhus Airport, Denmark
+sfdaffsdafs
+EKBI 9.1443183000,55.7460428000 Billund Airport, Denmark
+AIRP CoordinateLongitude,Latitude Description
+BIKF -22.6144444444,63.9869444444 Reykjavik-Keflavik Airport, Iceland
+EFHK 23.9813888889,60.2975000000 Helsinki Airport, Finland
+EKAH 10.7919416667,56.2879527833 Aarhus Airport, Denmark
+EKBI 9.1443183000,55.7460428000 Billund Airport, Denmark
