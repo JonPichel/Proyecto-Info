@@ -18,7 +18,6 @@ Raúl Criado, Adrià Vaquer, Jonathan Pichel, Pol Roca.
 	- 18:52 --> Se termina de asignar las tareas/funciones individuales
 	- 18:53 --> Se cierra la sesión
 
-
  * Sesión 2 - 22/04/2020 - Mediante Discord - Todos los miembros presentes
 	- 19:08 --> Se inicia la reunión
 	- 19:10 --> Se realizan los test de las funciones
@@ -28,7 +27,6 @@ Raúl Criado, Adrià Vaquer, Jonathan Pichel, Pol Roca.
 	- 19:48 --> Se empieza TestAirline
 	- 20:12 --> Se finalizan los test anteriores
 	- 20:14 --> Se cierra la sesión
-
 
  * Sesión 3 - 30/04/2020 - Mediante Discord - Todos los miembros presentes
 	- 11:05 --> Se inicia la reunión
@@ -42,7 +40,6 @@ Raúl Criado, Adrià Vaquer, Jonathan Pichel, Pol Roca.
 	- 11:59 --> Se termina de asignar las tareas/funciones individuales
 	- 12:01 --> Se cierra la sesión
 
-
  * Sesión 4 - 08/05/2020 - Mediante Discord - Todos los miembros presentes
 	- 18:16 --> Se inicia la reunión 
 	- 18:20 --> Se revisa el código de la Phase 2 (las diferentes funciones)
@@ -50,8 +47,25 @@ Raúl Criado, Adrià Vaquer, Jonathan Pichel, Pol Roca.
 	- 19:48 --> Se arreglan/corrigen algunas funciones
 	- 19:50 --> Se cierra la sesión
 
-
  * Sesión 5 - 09/05/2020 - Mediante Discord - Todos los miembros presentes
 	- 18:23 --> Se inicia la reunión
 	- 18:31 --> Se revisan funciones y se arreglan errores a partir de la realización de tests
 	- 19:12 --> Se cierra la sesión
+
+ * Sesión 6 - 11/05/2020 - Mediante Discord - Todos los miembros presentes
+        - Jonathan:
+                - convert_time(hhmm)
+                - write_day_plan(a, f)
+                - read_airports(f)
+        - Adrià:
+                - search_airport_index(v, s)
+                - read_flights(f)
+                - calculate_fee(ap, t)
+        - Pol:
+                - read_airline(f)
+                - read_aircrafts(f)
+                - read_airport_costs(v, f)
+        - Raúl:
+                - calculate_day_costs(a, vp)
+                - set_ap_info(ap, s1, s2, s3)
+                - set_costs(ap, c1, c2, c3)
