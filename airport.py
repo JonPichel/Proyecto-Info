@@ -9,7 +9,7 @@ class Airport:
         self.cost_per_hour = 0
 
 def set_ap_info(ap, s1, s2, s3):
-    """Function read_airports (ap: Airport, s1: str, s2: str, s3:str):
+    """Function set_ap_info (ap: Airport, s1: str, s2: str, s3:str):
     ===================================================
     Given and airport and three strings containing the ICAO code (s1), the name (s2),
     and the location (s3) of the airport, it updates that airport information
@@ -17,9 +17,35 @@ def set_ap_info(ap, s1, s2, s3):
     s1: str, ICAO code of the airport
     s2: str, official name of the airport
     s3: str, coordinates of the airport
-    La puso Jonathan aquí para poder llamar mi función mientras no está hecha
     """
-    pass
+    try:
+        ap.code = s1
+        ap.name = s2
+        ap.location = s3
+            
+    except AttributeError:
+        print("Wrong parameters. Provide an Airport object.")
+        return False
+
+
+def set_costs(ap, c1, c2, c3):
+    """ Function set_costs(ap, c1, c2, c3)
+    ==================================================
+    Updates the information of an airport related to fees.
+    ap: object of class Airport
+    c1: number of the runway cost
+    c2: number of the free parking hours
+    c3: number of the additional parking fees per hour
+    Created by Raúl Criado on May 11th 2020
+    """
+    try:
+        ap.fees = c1
+        ap.free_hours = c2
+        ap.cost_per_hour = c3
+            
+    except AttributeError:
+        print("Wrong parameters. Provide an Airport object.")
+        return False
 
 def read_airports(f):
     """Function read_airports (f: str): list
@@ -44,11 +70,13 @@ def read_airports(f):
                 print(f"Wrong format at line {i + 1}.")
             # If there was no errors, add the airport
             else:
-                ap = Airport()
-                set_ap_info(ap, code, name, location)
-                airports.append(ap)
+                a = Airport()
+                print(i)
+                set_ap_info(a, code, name, location)
+                airports.append(a)
 
     return airports
 
 if __name__ == '__main__':
-    read_airports('error.txt')
+    for ap in read_airports('error.txt'):
+        print(ap)
