@@ -240,3 +240,31 @@ def write_day_plan(a, f):
         output.write(assignment.write_assignment(assig))
     
     output.close()
+
+def calculate_day_cost(a,vp):
+    """Function calculate_day_cost(a,vp):
+    ===================================================
+    Calculates the total airport fees to be paid along the day
+    a: object of class airline (mainly assignments)
+    vp: list of aiports
+    Created by Raúl Criado on May 11th 2020
+    """
+    try:
+        assig = a.assignments
+        flights = assig.flights
+        m = 0
+        c = 0
+        for i in flights.arr:
+            for j in vp:
+                if flights[i].arr == vp[j]:
+                    c += airport.calculate_fee(vp[j],(flights[i].time_dep - flights[i].time_arr))
+                else:
+                    m += 1
+
+            if m == len(vp):
+                print('airport could not be found')
+                return (-1)
+            
+    except AttributeError:
+        print("Wrong Parameters, please provide an Assignment or an Airport")
+        return False
