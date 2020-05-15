@@ -254,16 +254,17 @@ def calculate_day_cost(a,vp):
         flights = assig.flights
         m = 0
         c = 0
-        for i in flights.arr:
-            for j in vp:
-                if flights[i].arr == vp[j]:
-                    c += airport.calculate_fee(vp[j],(flights[i].time_dep - flights[i].time_arr))
-                else:
-                    m += 1
+        for l in assig: 
+            for i in flights.arr:
+                for j in vp:
+                    if flights[i].arr == vp[j]:
+                        c += airport.calculate_fee(vp[j],(flights[i].time_dep - flights[i].time_arr))
+                    else:
+                        m += 1
 
-            if m == len(vp):
-                print('airport could not be found')
-                return (-1)
+                if m == len(vp):
+                    print('airport could not be found')
+                    return (-1)
             
     except AttributeError:
         print("Wrong Parameters, please provide an Assignment or an Airport")
