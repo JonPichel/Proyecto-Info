@@ -1,51 +1,84 @@
 import aircraft, flight, assignment
 
-ac1 = aircraft.Aircraft()
+from testFlight import createFlights
 
-ac1.callsign = 'AC320'
-ac1.type = 'A320'
-ac1.seats = 80
+# Create some flights
+flights = list(createFlights())
+
+# Create a couple of assignments
+ass1 = assignment.Assignment()
+ass2 = assignment.Assignment()
+
+# Create a couple of aircrafts
+ac1 = aircraft.Aircraft()
+ac1.callsign = "ACJ34"
+ac1.type = "A320"
+ac1.seats = 280
 
 ac2 = aircraft.Aircraft()
+ac2.callsign = "BS34J"
+ac2.type = "A321"
+ac2.seats = 310
 
-ac2.callsign = 'PAPA'
-ac2.type = 'A320'
-ac2.seats = 94234
+print("=" * 5,"PHASE 2 TEST PROGRAM", "=" * 5, "\n")
+print("Functions this week:")
+funcs = ["plot_assignment", "plot_assignments", "assign_aircraft", "assign_flight", "show_assignment"]
+for f in funcs:
+    print(f"\t{f}")
 
-f1 = flight.Flight()
+input("\n - PRESS ENTER TO TEST ASSIGN_AIRCRAFT AND ASSIGN_FLIGHT:")
 
-f1.dep = "Barcelona"
-f1.arr = "Vigo"
-f1.time_dep = 8 * 60
-f1.time_arr = 9 * 60 + 50
-f1.passengers = 48
+if assignment.assign_aircraft(ass1, ac1):
+    print("ac1 assigned to ass1")
+else:
+    print("Couldn't assign ac1 to ass1")
 
-f2 = flight.Flight()
+# What if we try to add another aircraft to the same assignment
+if assignment.assign_aircraft(ass1, ac2):
+    print("Aircraft was successfully assigned.")
+else:
+    print("Couldn't assign ac2 to ass1")
 
-f2.dep = "Vigo"
-f2.arr = "New York"
-f2.time_dep = 15 * 60
-f2.time_arr = 20 * 60
-f2.passengers = 74
+# But what if we add first a flight?
+ass2.flights.append(flights[0])
 
-f3 = flight.Flight()
+if assignment.assign_aircraft(ass2, ac2):
+    print("Aircraft was successfully assigned.")
+else:
+    print("Couldn't assign ac2 to ass2")
 
-f3.dep = "Palma"
-f3.arr = "Paris"
-f3.time_dep = 14 * 60
-f3.time_arr = 15 * 60
-f3.passengers = 67
+# Empty the flights list
+ass2.flights = []
+if assignment.assign_aircraft(ass2, ac2):
+    print("Aircraft was successfully assigned.")
+else:
+    print("Couldn't assign ac2 to ass2")
 
-ass1 = assignment.Assignment()
+# Try assigning some flights
+for i, f in enumerate(flights):
+    if assignment.assign_flight(ass1, f):
+        # Remove the assigned flight from the list, to not assign it again
+        flights = flights[:i] + flights[i + 1:]
 
-ass1.aircraft = ac1
-ass1.flights = [f1, f2]
+# Try assigning some flights
+for i, f in enumerate(flights):
+    if assignment.assign_flight(ass2, f):
+        # Remove the assigned flight from the list, to not assign it again
+        flights = flights[:i] + flights[i + 1:]
 
-ass2= assignment.Assignment()
+input("\n - PRESS ENTER TO TEST SHOW_ASSIGNMENT:")
 
-ass2.aircraft = ac2
-ass2.flights = [f1, f3]
+assignment.show_assignment(ass1)
 
-assignment.plot_assignment(ass1)
+assignment.show_assignment(ass2)
 
-assignment.plot_assignments([ass1, ass2])
+input("\n - PRESS ENTER TO TEST PLOT_ASSIGNMENT:")
+print("Plotting ass1...")
+assignment.plot_assignment(ass1, title='ass1')
+
+print("Plotting ass2...")
+assignment.plot_assignment(ass2, title='ass2')
+
+input("\n - PRESS ENTER TO TEST PLOT_ASSIGNMENTS:")
+print("Plotting ass1 and ass2 together...")
+assignment.plot_assignments([ass1, ass2], title="ass1 and ass2 together")

@@ -18,28 +18,60 @@ class Flight:
         self.time_arr = 0
         self.passengers = 0
 
-def format_time(t):
+def format_time(t, colon=True):
     """ Function format_time (t: int): str
     ==================================================
     t: integer, the number of minutes from midnight
+    colon: bool, if False it will use the format HHMM instead
     Return: str, time in HH:MM format
     Created by Jonathan Pichel and Raúl Criado on April 18th 2020
     Tested by Raúl Criado and Jonathan Pichel on April 19th 2020
     """
-    # If the input is not of the correct type
-    if type(t) != float and type(t) != int:
-        return "WRONG TIME"
+    try:
+        # If the input is not of the correct type
+        if type(t) != float and type(t) != int:
+            return "WRONG TIME"
     
-    hours = int(t // 60)
-    mins = int(t % 60)
+        hours = int(t // 60)
+        mins = int(t % 60)
     
-    # If the time is outside the hour day range, correct it
-    if hours > 23 or hours < 0:
-        hours %= 24
+        # If the time is outside the hour day range, correct it
+        if hours > 23 or hours < 0:
+            hours %= 24
     
-    # We use string formatting to avoid unnecessary code
-    return f"{hours:02}:{mins:02}"
-  	
+        # We use string formatting to avoid unnecessary code
+        if colon:
+            return f"{hours:02}:{mins:02}"
+        else:
+            return f"{hours:02}{mins:02}"
+    except AttributeError:
+        print("Wrong Parameters, provide an integer")
+        return False
+    
+def convert_time(hhmm):
+    """Function convert_time (hhmm: str)
+    ===================================================
+    Given a string with a time in HHMM format, it converts it to our minutes from midnight format
+    hhmm: str, time in HHMM format
+    Returns: the time in number of minutes since midnight
+    Created by Jonathan Pichel on May 11th 2020
+    """
+    try:
+        # We use lstrip to remove the starting zeros in case
+        # there is one, to avoid an invalid literal error
+        hours = int(hhmm[:2].lstrip('0'))
+        mins = int(hhmm[2:].lstrip('0'))
+    except IndexError:
+        # We pass here because we want to print the same message in both errors
+        pass
+    except ValueError:
+        # This will be printed if there is an IndexError too
+        print("Wrong data format. Provide a hour in HHMM format.")
+        return
+
+    # Return the number of minutes
+    return hours * 60 + mins
+
 def show_flight(f):
     """ Function show_flight(f: Flight)
     ==================================================
@@ -59,9 +91,9 @@ def show_flight(f):
         return
    	
     # Check if some information is missing
-    if dep == '':
+    if not dep:
         dep = 'UNKNOWN LOCATION'
-    if arr == '':
+    if not arr:
         arr = 'UNKNOWN LOCATION'
     
     print(time_dep, dep, 'to', time_arr, arr, 'with', passengers, 'passengers')
@@ -133,80 +165,159 @@ def delay_flight(f, d):
         print("Wrong parameters. Please provide a Flight object and an integer.")
         return False
     
-def check_overlap(f1, f2):
+def check_overlap(f1, f2, interval=60):
     """ Function check_overlap (f1: Flight, f2: Flight): bool
     =================================================
     Checks if the time ranges of two flights overlap
     f1: Flight, first flight to check
     f2: Flight, second flight to check
+    interval: int, minimum number of minutes that must exist between the flights
     Return: bool, False if they don't overlap, True if they do
     Created by Jonathan Pichel on April 5rd 2020
+    Tested by Pol Roca on May 9th 2020
     """
-    if ((f1.time_dep < f2.time_dep and f1.time_arr < f2.time_dep) or
-        (f1.time_dep > f2.time_arr and f1.time_arr > f2.time_arr)):
+    try:
+        if ((f1.time_dep <= f2.time_dep - interval and f1.time_arr <= f2.time_dep - interval) or
+            (f1.time_dep >= f2.time_arr + interval and f1.time_arr >= f2.time_arr + interval)):
+            return False
+        else:
+            return True
+    except AttributeError:
+        print("Wrong Parameters, please provide a Flight")
         return False
-    else:
-        return True
-
-def check_overlap_list(f, vector_flight):
+    
+def check_overlap_list(f, vector_flight, interval=60):
     """ Function check_overlap_list (f: Flight, vector_flight: list): bool
     =================================================
     Checks if one flight overlaps with any other one from a list of flights
     f: Flight, a Flight object
     vector_flight: list, a list of Flight objects
+    interval: int, minimum number of minutes that must exist between the flights
     Return: bool, False if they don't overlap, True if they do
-    Created by Jonathan Pichel on April 5rd 2020
+    Created by Jonathan Pichel on May 5rd 2020
+    Tested by Pol Roca on May 9th 2020
     """
-    for flight in vector_flight:
-        if check_overlap(f, flight):
-            return True
-    return False
-
-def check_inner_overlap(vector_flight):
+    try:
+        for flight in vector_flight:
+            if check_overlap(f, flight, interval=interval):
+                return True
+        return False
+    except AttributeError:
+        print("Wrong Parameters, please provide a Flight")
+        return False
+    
+def check_inner_overlap(vector_flight, interval=60):
     """ Function check_overlap_list (f: Flight, vector_flight: list): bool
     =================================================
     Checks if there exists any overlap between the flights of a list
     vector_flight: list, a list of Flight objects
+    interval: int, minimum number of minutes that must exist between the flights
     Return: bool, True if there's any overlap, False otherwise
-    Created by Jonathan Pichel on April 5rd 2020
+    Created by Jonathan Pichel on May 5rd 2020
+    Tested by Pol Roca on May 9th 2020
     """
-    for i in range(len(vector_flight)):
-        if check_overlap_list(vector_flight[i], vector_flight[i+1:]):
-            return True
-    return False
-
-def plot_flight(f, show=True):
+    try:
+        for i in range(len(vector_flight)):
+            if check_overlap_list(vector_flight[i], vector_flight[i+1:], interval=interval):
+                return True
+        return False
+    except AttributeError:
+        print("Wrong Parameters, please provide a Flight")
+        return False
+    
+def plot_flight(f, show=True, title=None):
     """ Function plot_flight (f: Flight, show: bool)
     =================================================
     Plots a flight
     f: Flight, a Flight object
     show: bool, flag to control whether to show the plot or not. True by default.
-    Created by Pol Roca on April 6th 2020
+    title: str, if provided it will set the title of the plot
+    Created by Pol Roca on May 6th 2020
+    Tested by Adrià Vaquer on May 9th 2020
     """
-    # Plot the flight
-    plt.barh(f"{f.arr}\n{f.dep}", flight_duration(f), left=f.time_dep, color='lightblue')
+    try:
+        # Plot the flight
+        plt.barh(f"{f.dep}\n{f.arr}", flight_duration(f), left=f.time_dep, color='lightblue')
     
-    # Plot customization
-    # Set the ticks and give them labels
-    x_ticks = [60 * i for i in range(0, 24, 3)]         # Only set ticks every three hours
-    x_labels = list(map(format_time, x_ticks))   # List of strings, formatted with flight.format_time()
-    plt.xticks(x_ticks, x_labels)
-    plt.xlim(0, 60 * 24)
+        # Plot customization
+        # Set the ticks and give them labels
+        x_ticks = [60 * i for i in range(0, 24)]
+        x_labels = list(map(format_time, x_ticks))   # List of strings, formatted with flight.format_time()
+        plt.xticks(x_ticks, x_labels)
+        plt.tick_params(which='major', axis='x', rotation=45, labelsize='x-small')
+        plt.grid(which='major', axis='x', color='gray', linestyle='--', linewidth=0.5)
+        plt.xlim(0, 60 * 24)
 
-    # Show the plot if asked to
-    if show:
+        if title:
+            plt.title(title)
+        # Show the plot if asked to
+        if show:
             plt.show()
+    except AttributeError:
+        print("Wrong Parameters, please provide a Flight")
+        return
 
-def plot_flights(vf):
+def plot_flights(vf, title=None):
     """Function plot_flights (vf: list of Flights)
     ===================================================
     Plots a list of flights
     vf: list, list of Flights to be plotted
+    title: str, if provided it will set the title of the plot
     Created by Jonathan Pichel on May 5th 2020
+    Tested by Pol Roca on May 9th 2020
     """
-    for flight in vf:
-        # We use plot_assignment with show set as False.
-        plot_flight(flight, show=False)
+    try:
+        for flight in sort_flights(vf):
+            # We use plot_assignment with show set as False.
+            plot_flight(flight, show=False, title=title)
+        
+        # We show the plot once all of them are plotted.
+        plt.show()
+    except AttributeError:
+        print("Wrong Parameters, please provide a Flight list")
+        return False
+
+def sort_flights(vf):
+    """Function sort_flights (vf: list of Flights)
+    ===================================================
+    Given a list of flights, it sorts the flights by time of departure and returns the sorted list
+    vf: list, list of Flights to be sorted
+    Returns: list, a list of flights ordered by time_dep
+    Created by Jonathan Pichel on May 9th 2020
+    Tested by Adriá Vaquer on May 9th 2020
+    """
+    try:
+        # I use the sorted builtin to sort the flights by time of departure
+        return sorted(vf, key=lambda f: f.time_dep)
+    except AttributeError:
+        print("Wrong Parameters, please provide a list of Flights")
+        return
     
-    # We show the plot once all of them are plotted.
-    plt.show()
+def check_airports(vf):
+    """Function check_airports (vf: list of Flights)
+    ===================================================
+    Given a list of flights assigned to an aircraft, it checks that their airports' order makes sense.
+    vf: list, list of Flights to be sorted
+    Returns: False if it doesn't follow a logical order, True if it does
+    Created by Jonathan Pichel on May 9th 2020
+    Tested by Raúl Criado on May 9th 2020
+    """
+    try:
+        # Iterate the sorted list of flights
+        for i, f in enumerate(sort_flights(vf)):
+            if not i == 0:
+                # If the flights departure airport doesn't match the arrival airport of the previous flight
+                if prev != f.dep:
+                    # Return False
+                    return False
+            prev = f.arr
+        if sort_flights(vf)[-1].arr != sort_flights(vf)[0].dep:
+            return False
+        # Else, return True
+        return True
+    except AttributeError:
+        print("Wrong Parameters, please provide a list of Flights")
+        return
+
+if __name__ == '__main__':
+    print(convert_time("hell"))
