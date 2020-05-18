@@ -269,3 +269,19 @@ def calculate_day_cost(a,vp):
     except AttributeError:
         print("Wrong Parameters, please provide an Assignment or an Airport")
         return False
+
+def read_airline(self,f):
+    """ Function read_airline (f: String):
+    ===================================================
+    this function reads the content of the file f to initialize a new airline with the data found
+    f: String, the name of the file
+    Created by Pol Roca on May 18th 2020
+    """
+
+    a=Airline()
+    F=open(f,'r')
+
+    x=F.readlines()
+    a.name=x[0]
+    a.aircrafts=read_aircrafts(x[1])
+    a.operations=read_flights(x[2])
