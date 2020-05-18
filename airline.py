@@ -270,7 +270,7 @@ def calculate_day_cost(a,vp):
         print("Wrong Parameters, please provide an Assignment or an Airport")
         return False
 
-def read_airline(self,f):
+def read_airline(f):
     """ Function read_airline (f: String):
     ===================================================
     this function reads the content of the file f to initialize a new airline with the data found
