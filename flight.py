@@ -321,3 +321,58 @@ def check_airports(vf):
 
 if __name__ == '__main__':
     print(convert_time("hell"))
+
+def read_flights(f):
+    """ Function read_flights (f: string)
+    =================================================
+    Read the flights of a text file
+    f: string, the name of the text file
+    Return: vector of flights, a vector with the flights of the text file
+    Created by Adrià Vaquer on 11th May 2020
+    """
+    vec_flights=[]
+    try:
+        F=open(f,"r")
+        line=F.readline()
+        while line != "":
+            line=F.readline()
+            elements=line.split(" ")
+            if elements[0]=="":
+                break
+            fli=flight.Flight()
+            fli.time_dep=elements[0]
+            fli.time_arr=elements[1]
+            fli.dep=elements[2]
+            fli.arr=elements[3]
+            fli.passengers=elements[4]
+            vec_flights.append(fli)
+        x=0
+        first = True
+        position=1
+        for i in vec_flights:                   #Here we are seeing if the time departure is wrong
+            if i.time_dep < vec_flights[x-1].time_dep and first == False:
+                print("The line",position,"has an error in the departure time")
+                vec_flights.remove(i)
+            first=False
+            position+=1
+            x+=1
+        position = 1
+        for i in vec_flights:       #Here we are looking if the format is wrong
+            try:
+                int(i.time_dep)
+                int(i.time_arr)
+                int(i.passengers)
+            except ValueError:
+                print("Format Error in line",position)
+                vec_flights.remove(i)
+            try:
+                if int(i.dep) or int(i.arr):    #Here we are looking if the format is wrong
+                    print("Format Error in line",position)
+                    vec_flights.remove(i)
+            except ValueError:
+                x=0
+            position+=1
+        return vec_flights
+    except FileNotFoundError:
+        print("The file doesn't exist, please provide a correct file.")
+        return vec_flights
