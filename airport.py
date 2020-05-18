@@ -186,3 +186,48 @@ def calculate_fee(ap,t):
     except AttributeError:
         print("Wrong Parameters, please provide an Airport")
         return 0
+
+def read_airport_costs(v,f):
+    """ Function read_airport_costs (v: vector of airports, f: string):
+    ===================================================
+    this function reads the content of the file f to sets the costs of the airports in the vector v. 
+    f: String, the name of the file
+    v: Vector of airports
+    Created by Pol Roca on May 18th 2020
+    """
+
+    try:
+
+        F=open(f,'r')
+
+        airport_costs=F.readlines()
+        airport_costs=airport_costs[1:]
+
+        contador=0
+
+        for i in airport_costs:
+            try:
+                y=airport_costs[contador].split()
+                z=y[3].replace('/n','')
+                code=y[0]
+                runway=int(y[1])
+                free=int(y[2])
+                costxhh=int(z)
+            except:
+                print("The format of the file is not valid")
+                continue
+            position=search_airport_index(v,code)
+            if position!=-1:
+                v[position].fees=runway
+                v[position].free_hours=free
+                v[position].cost_per_hour=costxhh
+            else:
+                print("The airport in the costs file was not found in the vector")
+                a=Airport()
+                set_costs(a, runway, free, costxhh)
+                v.append(a)
+            contador+=1
+
+    except FileNotFoundError:
+        print("This file doesn't exist, please enter a correct file")
+        return []
