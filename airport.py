@@ -118,3 +118,31 @@ def show_airport(ap):
 if __name__ == '__main__':
     for ap in read_airports('error.txt'):
         show_airport(ap)
+
+
+def map_airports(v):
+    """ Function map_airports (v: vector of airports)
+    ==================================================
+    Creates a kml file that located all the airports from the vector introduced
+    v: vector of airports extracted from the file
+    Created by Raúl Criado on May 18th 2020
+    """
+    try:
+        with open("Airports.kml", "w") as f:
+            f.write('<kml xmlns="http://www.opengis.net/kml/2.2">\n')
+            f.write("<Document>\n")
+            for i in v:
+                f.write("  <Placemark>"+' '+"<name>"+v[i].code+"</name>\n")
+                f.write("    <description>"+ v[i].name + "</description>\n")
+                f.write("    <Point>\n")
+                f.write("     <coordinates>\n")
+                f.write("       "+str(v[i].location)+"\n")
+                f.write("     </coordinates>\n")
+                f.write("    </Point>\n")
+                f.write("  </Placemark>\n")
+                f.write("</Document>\n")
+            f.write("</kml>\n")
+
+    except AttributeError:
+        print("Wrong parameters. Provide an Airport object.")
+        return False
