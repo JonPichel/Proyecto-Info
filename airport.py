@@ -146,3 +146,43 @@ def map_airports(v):
     except AttributeError:
         print("Wrong parameters. Provide an Airport object.")
         return False
+
+def search_airport_index(v,s):
+    """ Function search_airport_index (v: vector of Airport, s: String)
+    =================================================
+    Search the index of the desired airport
+    v: vector of Airport, the vector which are our airports
+    s: string, the ICAO code of the airport
+    Return: integer, the index on the vector
+    Created by Adrià Vaquer on 11th May 2020
+    """
+    try:
+        position=0
+        for airport in v:
+            if airport.code== s:
+                return position
+            position+=1
+        if position >= len(v):
+            return -1
+    except AttributeError:
+        print("Wrong Parameters, please provide a vector of airports")
+
+def calculate_fee(ap,t):
+    """ Function calculate_fee (ap: Airport, t: Integer)
+    =================================================
+    Calculates the cost of the airport
+    ap: Airport, the airport we want to know its costs
+    t: integer, the number of minutes we want to leave the aircraft
+    Return: integer, the total cost
+    Created by Adrià Vaquer on 11th May 2020
+    """
+    try:    
+        cost=0
+        cost=cost+ap.fees
+        if t/60 > ap.free_hours:
+            extra_cost= (t/60-ap.free_hours)*ap.cost_per_hour
+        cost+=extra_cost
+        return cost
+    except AttributeError:
+        print("Wrong Parameters, please provide an Airport")
+        return 0
