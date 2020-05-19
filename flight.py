@@ -390,24 +390,25 @@ def map_flights(vf,va):
         with open("Operations.kml", "w") as f:
             f.write('<kml xmlns="http://www.opengis.net/kml/2.2">\n')
             f.write("<Document>\n")
+            f.write(" <Placemark>\n"
+            f.write("   <name>Route</name>\n")
+            f.wrtie("   <LineString>")
+            f.write("    <extrude>1</extrude>\n")
+            f.write("     <coordinates>\n")
             for i in vf:
                 for v in va:
-                    if i.dep == v.code:
-                        f.write(" <Placemark>\n"
-                        f.write("   <name>Route</name>\n")
-                        f.wrtie("   <LineString>")
-                        f.write("    <extrude>1</extrude>\n")
-                        f.write("     <coordinates>\n")
-                        f.write("       "+v.code+"\n")
-                        f.write("     </coordinates>\n")
-                        f.write("  </LineString>\n")
-                        f.write(" </Placemark>\n")
-                        f.write("</Document>\n")
-            f.write("</kml>\n")
-
+                    if i.dep == v.code:    
+                        f.write("       "+v.location+"\n")
                     else:
                         print('Airport cannot be found')
                         return False
+                                
+            f.write("     </coordinates>\n")
+            f.write("  </LineString>\n")
+            f.write(" </Placemark>\n")
+            f.write("</Document>\n")
+            f.write("</kml>\n")
+
 
     except AttributeError:
         print("Wrong parameters. Provide an Airport object.")
