@@ -395,20 +395,22 @@ def map_flights(vf,va):
             f.wrtie("   <LineString>")
             f.write("    <extrude>1</extrude>\n")
             f.write("     <coordinates>\n")
+            m = 0
             for i in vf:
                 for v in va:
                     if i.dep == v.code:    
                         f.write("       "+v.location+"\n")
                     else:
-                        print('Airport cannot be found')
-                        return False
-                                
+                        m+=1                                
             f.write("     </coordinates>\n")
             f.write("  </LineString>\n")
             f.write(" </Placemark>\n")
             f.write("</Document>\n")
             f.write("</kml>\n")
 
+        if m == len(vf):
+            print('Airport cannot be found')
+            return False
 
     except AttributeError:
         print("Wrong parameters. Provide an Airport object.")
