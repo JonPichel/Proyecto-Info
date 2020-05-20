@@ -118,3 +118,116 @@ def show_airport(ap):
 if __name__ == '__main__':
     for ap in read_airports('error.txt'):
         show_airport(ap)
+
+
+def map_airports(v):
+    """ Function map_airports (v: vector of airports)
+    ==================================================
+    Creates a kml file that located all the airports from the vector introduced
+    v: vector of airports extracted from the file
+    Created by Raúl Criado on May 18th 2020
+    """
+    try:
+        with open("Airports.kml", "w") as f:
+            f.write('<kml xmlns="http://www.opengis.net/kml/2.2">\n')
+            f.write("<Document>\n")
+            for i in v:
+                f.write("  <Placemark>"+' '+"<name>"+v[i].code+"</name>\n")
+                f.write("    <description>"+ v[i].name + "</description>\n")
+                f.write("    <Point>\n")
+                f.write("     <coordinates>\n")
+                f.write("       "+str(v[i].location)+"\n")
+                f.write("     </coordinates>\n")
+                f.write("    </Point>\n")
+                f.write("  </Placemark>\n")
+                f.write("</Document>\n")
+            f.write("</kml>\n")
+
+    except AttributeError:
+        print("Wrong parameters. Provide an Airport object.")
+        return False
+
+def search_airport_index(v,s):
+    """ Function search_airport_index (v: vector of Airport, s: String)
+    =================================================
+    Search the index of the desired airport
+    v: vector of Airport, the vector which are our airports
+    s: string, the ICAO code of the airport
+    Return: integer, the index on the vector
+    Created by Adrià Vaquer on 11th May 2020
+    """
+    try:
+        position=0
+        for airport in v:
+            if airport.code== s:
+                return position
+            position+=1
+        if position >= len(v):
+            return -1
+    except AttributeError:
+        print("Wrong Parameters, please provide a vector of airports")
+
+def calculate_fee(ap,t):
+    """ Function calculate_fee (ap: Airport, t: Integer)
+    =================================================
+    Calculates the cost of the airport
+    ap: Airport, the airport we want to know its costs
+    t: integer, the number of minutes we want to leave the aircraft
+    Return: integer, the total cost
+    Created by Adrià Vaquer on 11th May 2020
+    """
+    try:    
+        cost=0
+        cost=cost+ap.fees
+        if t/60 > ap.free_hours:
+            extra_cost= (t/60-ap.free_hours)*ap.cost_per_hour
+        cost+=extra_cost
+        return cost
+    except AttributeError:
+        print("Wrong Parameters, please provide an Airport")
+        return 0
+
+def read_airport_costs(v,f):
+    """ Function read_airport_costs (v: vector of airports, f: string):
+    ===================================================
+    this function reads the content of the file f to sets the costs of the airports in the vector v. 
+    f: String, the name of the file
+    v: Vector of airports
+    Created by Pol Roca on May 18th 2020
+    """
+
+    try:
+
+        F=open(f,'r')
+
+        airport_costs=F.readlines()
+        airport_costs=airport_costs[1:]
+
+        contador=0
+
+        for i in airport_costs:
+            try:
+                y=airport_costs[contador].split()
+                z=y[3].replace('/n','')
+                code=y[0]
+                runway=int(y[1])
+                free=int(y[2])
+                costxhh=int(z)
+            except:
+                print("The format of the file is not valid")
+                continue
+            position=search_airport_index(v,code)
+            if position!=-1:
+                v[position].fees=runway
+                v[position].free_hours=free
+                v[position].cost_per_hour=costxhh
+            else:
+                print("The airport in the costs file was not found in the vector")
+                a=Airport()
+                set_costs(a, runway, free, costxhh)
+                v.append(a)
+            contador+=1
+
+    except FileNotFoundError:
+        print("This file doesn't exist, please enter a correct file")
+        return []

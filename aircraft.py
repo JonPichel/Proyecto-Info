@@ -34,3 +34,59 @@ def show_aircraft(a):
         atype = 'UNKNOWN AIRCRAFT TYPE'
     
     print(callsign, '(' + atype, 'with', seats, 'seats)')
+    
+
+def read_aircrafts(f):
+    """ Function read_aircrafts (f: String):
+    ===================================================
+    Reads each line of a file containing a list of aircraft and creates a vector with the data found
+    f: String, the name of the file
+    Created by Pol Roca on May 14th 2020
+    """
+
+    vector_aircrafts=[]
+
+    try:
+        F=open(f,'r')
+
+        vector_aircrafts=F.readlines()
+        vector_aircrafts=vector_aircrafts[1:]
+
+        contador=0
+        errorinline=[]
+    
+        for i in vector_aircrafts:
+                
+            vector_aircrafts[contador]=i[:-1]
+
+            test=vector_aircrafts[contador].split()
+            try:
+                test[2]=int(test[2])
+            except ValueError:
+                errorinline.append(contador)
+                    
+            contador+=1
+                
+            if contador+1==len(vector_aircrafts):
+                break
+
+        test=vector_aircrafts[-1].split()
+        try:
+            test[2]=int(test[2])
+        except ValueError:
+            errorinline.append(contador)
+
+        contador=0
+        for i in errorinline:
+            vector_aircrafts.pop(errorinline[contador])
+            contador2=0
+            for o in errorinline:
+                errorinline[contador2]=errorinline[contador2]-1
+                contador2+=1
+            contador+=1
+
+        return vector_aircrafts
+
+    except FileNotFoundError:
+        print("This file doesn't exist, please enter a correct file")
+        return vector_aircrafts

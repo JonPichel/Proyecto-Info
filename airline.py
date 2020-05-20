@@ -254,17 +254,34 @@ def calculate_day_cost(a,vp):
         flights = assig.flights
         m = 0
         c = 0
-        for i in flights.arr:
-            for j in vp:
-                if flights[i].arr == vp[j]:
-                    c += airport.calculate_fee(vp[j],(flights[i].time_dep - flights[i].time_arr))
-                else:
-                    m += 1
+        for l in assig: 
+            for i in flights.arr:
+                for j in vp:
+                    if flights[i].arr == vp[j]:
+                        c += airport.calculate_fee(vp[j],(flights[i].time_dep - flights[i].time_arr))
+                    else:
+                        m += 1
 
-            if m == len(vp):
-                print('airport could not be found')
-                return (-1)
+                if m == len(vp):
+                    print('airport could not be found')
+                    return (-1)
             
     except AttributeError:
         print("Wrong Parameters, please provide an Assignment or an Airport")
         return False
+
+def read_airline(f):
+    """ Function read_airline (f: String):
+    ===================================================
+    this function reads the content of the file f to initialize a new airline with the data found
+    f: String, the name of the file
+    Created by Pol Roca on May 18th 2020
+    """
+
+    a=Airline()
+    F=open(f,'r')
+
+    x=F.readlines()
+    a.name=x[0]
+    a.aircrafts=read_aircrafts(x[1])
+    a.operations=read_flights(x[2])
