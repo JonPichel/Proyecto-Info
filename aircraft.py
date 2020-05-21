@@ -82,7 +82,7 @@ def read_aircrafts(f):
             contador2=0
             for o in errorinline:
                 errorinline[contador2]=errorinline[contador2]-1
-                contador2+=1
+                contador2 += 1
             contador+=1
 
         return vector_aircrafts

@@ -339,7 +339,7 @@ def read_flights(f):
             elements=line.split(" ")
             if elements[0]=="":
                 break
-            fli=flight.Flight()
+            fli = Flight()
             fli.time_dep=elements[0]
             fli.time_arr=elements[1]
             fli.dep=elements[2]
@@ -390,7 +390,7 @@ def map_flights(vf,va):
         with open("Operations.kml", "w") as f:
             f.write('<kml xmlns="http://www.opengis.net/kml/2.2">\n')
             f.write("<Document>\n")
-            f.write(" <Placemark>\n"
+            f.write(" <Placemark>\n")
             f.write("   <name>Route</name>\n")
             f.wrtie("   <LineString>")
             f.write("    <extrude>1</extrude>\n")

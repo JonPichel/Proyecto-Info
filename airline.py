@@ -278,10 +278,11 @@ def read_airline(f):
     Created by Pol Roca on May 18th 2020
     """
 
-    a=Airline()
-    F=open(f,'r')
+    a = Airline()
+    F = open(f,'r')
 
-    x=F.readlines()
-    a.name=x[0]
-    a.aircrafts=read_aircrafts(x[1])
-    a.operations=read_flights(x[2])
+    x = [line.strip() for line in F.readlines()]
+    a.name = x[0]
+    a.aircrafts = aircraft.read_aircrafts(x[1])
+    a.operations = flight.read_flights(x[2])
+    return a
