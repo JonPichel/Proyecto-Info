@@ -155,6 +155,6 @@ def write_assignment(assig):
     """
     string = f"Flights assigned to aircraft {assig.aircraft.callsign} are:\n"
     for f in assig.flights:
-        # We use format_time with colon set to true
+        # We use format_time with colon set to false
         string += f"\t{flight.format_time(f.time_dep, colon=False)} {flight.format_time(f.time_arr, colon=False)}"
         string += f" {f.dep} {f.arr} {f.passengers}\n"

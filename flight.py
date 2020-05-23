@@ -339,12 +339,12 @@ def read_flights(f):
             elements=line.split(" ")
             if elements[0]=="":
                 break
-            fli=flight.Flight()
-            fli.time_dep=elements[0]
-            fli.time_arr=elements[1]
+            fli = Flight()
+            fli.time_dep=int(elements[0])
+            fli.time_arr=int(elements[1])
             fli.dep=elements[2]
             fli.arr=elements[3]
-            fli.passengers=elements[4]
+            fli.passengers=int(elements[4])
             vec_flights.append(fli)
         x=0
         first = True
@@ -376,3 +376,42 @@ def read_flights(f):
     except FileNotFoundError:
         print("The file doesn't exist, please provide a correct file.")
         return vec_flights
+
+
+def map_flights(vf,va):
+    """ Function map_flights (vf: vector of flights, va: vector of airports)
+    ==================================================
+    Creates a kml file that show the route of flights through the airports from the vector introduced
+    vf: vector of flights
+    va: vector of airports extracted from the file
+    Created by Raúl Criado on May 19th 2020
+    """
+    try:
+        with open("Operations.kml", "w") as f:
+            f.write('<kml xmlns="http://www.opengis.net/kml/2.2">\n')
+            f.write("<Document>\n")
+            f.write(" <Placemark>\n")
+            f.write("   <name>Route</name>\n")
+            f.wrtie("   <LineString>")
+            f.write("    <extrude>1</extrude>\n")
+            f.write("     <coordinates>\n")
+            m = 0
+            for i in vf:
+                for v in va:
+                    if i.dep == v.code:    
+                        f.write("       "+v.location+"\n")
+                    else:
+                        m+=1                                
+            f.write("     </coordinates>\n")
+            f.write("  </LineString>\n")
+            f.write(" </Placemark>\n")
+            f.write("</Document>\n")
+            f.write("</kml>\n")
+
+        if m == len(vf):
+            print('Airport cannot be found')
+            return False
+
+    except AttributeError:
+        print("Wrong parameters. Provide an Airport object.")
+        return False
