@@ -43,32 +43,30 @@ def read_aircrafts(f):
     f: String, the name of the file
     Created by Pol Roca on May 14th 2020
     """
+    # We iterate through all the lines of the file
+    aircrafts = []
 
-     try:
+    # We enumerate the iteration to be able to communicate errors to the user
+    try:
+        for i, line in enumerate(open(f, 'r')):
+            # We don't process the header, in case there is one
+            if not line.startswith('CALLSIGN AC-TYPE SEATS'):
+                words = line.split()
+                try:
+                    callsign = words[0]
+                    model = words[1]
+                    seats = int(words[2])
+                except IndexError:
+                    print(f"Wrong format at line {i + 1}.")
+                # If there was no errors, add the airport
+                else:
+                    a = Aircraft()
+                    a.callsign = callsign
+                    a.type = model
+                    a.seats = seats
+                    aircrafts.append(a)
 
-        F=open(f,'r')
-
-        file_content=F.readlines()
-        file_content=file_content[1:]
-
-        contador=0
-        vector_aircrafts=[]
-
-        for i in file_content:
-            try:
-                y=file_content[contador].split()
-                z=y[2].replace('/n','')
-                callsign=y[0]
-                actype=y[1]
-                seats=int(y[2])
-                contador+=1
-            except:
-                print("The format of the line " contador+1 " is not valid")
-                contador+=1
-                continue
-            vector_aircrafts.append(file_content[contador-1])
-        return vector_aircrafts
-
+        return aircrafts
     except FileNotFoundError:
-        print("This file doesn't exist, please enter a correct file")
-        return []
+        print("File couldn't be found.")
+        return
