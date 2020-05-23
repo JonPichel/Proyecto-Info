@@ -340,11 +340,11 @@ def read_flights(f):
             if elements[0]=="":
                 break
             fli = Flight()
-            fli.time_dep=elements[0]
-            fli.time_arr=elements[1]
+            fli.time_dep=int(elements[0])
+            fli.time_arr=int(elements[1])
             fli.dep=elements[2]
             fli.arr=elements[3]
-            fli.passengers=elements[4]
+            fli.passengers=int(elements[4])
             vec_flights.append(fli)
         x=0
         first = True
