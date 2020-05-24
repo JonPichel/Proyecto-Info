@@ -25,7 +25,7 @@ def show_aircraft(a):
         atype = a.type
         seats = a.seats
     except AttributeError:
-      print("Wrong parameters. Provide an Aircraft object.")
+      print(" [ERROR] (show_aircraft) Wrong parameters. Provide an Aircraft object.")
       return
     # Check if some information is missing
     if not callsign:
@@ -35,7 +35,6 @@ def show_aircraft(a):
     
     print(callsign, '(' + atype, 'with', seats, 'seats)')
     
-
 def read_aircrafts(f):
     """ Function read_aircrafts (f: String):
     ===================================================
@@ -56,9 +55,9 @@ def read_aircrafts(f):
                     callsign = words[0]
                     model = words[1]
                     seats = int(words[2])
-                except IndexError:
-                    print(f"Wrong format at line {i + 1}.")
-                # If there was no errors, add the airport
+                except (IndexError, ValueError) as format_exception:
+                    print(f" [ERROR] (read_aircrafts) Wrong format at line {i + 1}.")
+                # If there was no errors, add the aircraft
                 else:
                     a = Aircraft()
                     a.callsign = callsign
@@ -68,8 +67,8 @@ def read_aircrafts(f):
 
         return aircrafts
     except FileNotFoundError:
-        print("File couldn't be found.")
+        print(" [ERROR] (read_aircrafts) File couldn't be found.")
         return
     except PermissionError:
-        print("You don't have permissions over that file.")
+        print(" [ERROR] (read_aircrafts) You don't have permissions over that file.")
         return

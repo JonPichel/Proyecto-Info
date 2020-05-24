@@ -9,9 +9,16 @@ def initialize_data():
         print("(q) quit to main menu")
 
         option = input("What type of file do you want to read from?: ")
+        # Initialize airline
         if option == 'l':
-            filename = input("Filename to read from: ")
-            airlines.append(airline.read_airline(filename))
+            filename = input("Name of the file to read from: ")
+            al = airline.read_airline(filename)
+            if al:
+                airlines.append(airline.read_airline(filename))
+                input("Airline correctly initialized.")
+            else:
+                input("There was an error reading the file.\n")
+        # Initialize airport
         elif option == 'p':
             filename = input("Filename to read from: ")
             new_airports = airport.read_airports(filename)
@@ -19,6 +26,7 @@ def initialize_data():
                 if airport.search_airport_index(airports, ap.code) == -1:
                     print(f"Succesfully added airport: {ap.code}")
                     airports.append(ap)
+        # Initialize airport data
         elif option == 'd':
             filename = input("Filename to read from: ")
             airport.read_airport_costs(airports, filename)
@@ -26,12 +34,17 @@ def initialize_data():
             break
 
 def assign_flights():
-    name = input("Name of the airline (q to quit to main menu): ")
-    if name == 'q':
-        return
-    al, = (a for a in airlines if a.name == name)
-    airline.assign_operations(al)
-    print("Operations assigned.")
+    while True:
+        name = input("Name of the airline (q to quit to main menu): ")
+        if name == 'q':
+            break
+        al = [a for a in airlines if a.name == name]
+        if al:
+            airlines.remove(al[0])
+            airlines.append(airline.assign_operations(al[0]))
+            input(f"Operations of {name} assigned.")
+        else:
+            input(f"No airline found with name {name}.")
 
 def kml_menu():
     print("(p) write kml of airports")
@@ -53,7 +66,8 @@ def kml_menu():
     
 def plot_menu():
     print("Plot menu options:\n")
-    print("(a) plot airline assignments")
+    print("(a) plot all of the assignments of an airline")
+    print("(s) plot a single assignment (by aircraft's callsign)")
     print("(f) plot airline operations")
     print("(q) quit to main menu")
 
@@ -62,18 +76,21 @@ def plot_menu():
         name = input("Name of the airline: ")
         al = [a for a in airlines if a.name == name]
         if al:
-            print(f"Plotting flights for {al[0].name}")
+            input(f"Plotting flights for {al[0].name}...")
             airline.plot_assignments(al[0], title=f"Assignments of {al[0].name}")
         else:
-            print("No airline found with name", name)
+            input("No airline found with name", name)
+    elif option == 's':
+        name = input("Name of the airline: ")
+        callsign = input("Aircraft's callsign: ")
     elif option == 'f':
         name = input("Name of the airline: ")
         al = [a for a in airlines if a.name == name]
         if al:
-            print(f"Plotting flights for {al[0].name}")
+            input(f"Plotting flights for {al[0].name}...")
             airline.plot_flights(al[0], title=f"Flights of {al[0].name}")
         else:
-            print("No airline found with name", name)
+            input("No airline found with name", name)
     elif option == 'q':
         pass
 
@@ -173,7 +190,7 @@ def print_options():
     print('(s) show airline information in the screen and the cost of the day operations') 
     print('(k) write KML files of airports, flights and assignments')
     print('(p) plot the flights and the assignments of the airline')
-    print('(v) view information about some variable')
+    print('(v) view information about some object')
     print('(w) write current airline assignment into a file\n')
     print('\t--end option--')
     print('(e) end program\n')

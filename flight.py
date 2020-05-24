@@ -41,7 +41,7 @@ def format_time(t, colon=True):
         else:
             return f"{hours:02}{mins:02}"
     except AttributeError:
-        print("Wrong Parameters, provide an integer")
+        print(" [ERROR] (format_time) Wrong Parameters, provide an integer")
         return False
     
 def convert_time(hhmm):
@@ -57,12 +57,9 @@ def convert_time(hhmm):
         # there is one, to avoid an invalid literal error
         hours = int(hhmm[:2].lstrip('0')) if hhmm[:2].lstrip('0') else 0
         mins = int(hhmm[2:].lstrip('0')) if hhmm[2:].lstrip('0') else 0
-    except IndexError:
-        # We pass here because we want to print the same message in both errors
-        pass
-    except ValueError:
+    except (ValueError, IndexError) as format_error:
         # This will be printed if there is an IndexError too
-        print(f"Wrong data format: {hhmm}. Provide a hour in HHMM format.")
+        print(f" [ERROR] (convert_time) Wrong data format: {hhmm}. Provide a hour in HHMM format.")
         return
 
     # Return the number of minutes
@@ -83,7 +80,7 @@ def show_flight(f):
         arr = f.arr
         passengers = f.passengers
     except AttributeError:
-        print("Wrong parameters. Provide a Flight object.")
+        print(" [ERROR] (show_flight) Wrong parameters. Provide a Flight object.")
         return
    	
     # Check if some information is missing
@@ -110,10 +107,10 @@ def fits_flight_in_aircraft(f, a):
         else:
             return False
     except AttributeError:
-        print("Wrong parameters. Provide a Flight and an Aircraft objects.")
+        print(" [ERROR] (fits_flight_in_aircraft) Wrong parameters. Provide a Flight and an Aircraft objects.")
         return
     except TypeError:
-        print("Aircraft seats must be an integer.")
+        print(" [ERROR] (fits_flight_in_aircraft) Aircraft seats and flight passengers must be integers.")
         return
 
 def flight_duration(f):
@@ -127,13 +124,13 @@ def flight_duration(f):
     """
     try:
         # We define a variable called duration that will record the difference between the arrival and departure times
-        duration = f.time_arr - f.time_dep
+        if f.time_arr >= f.time_dep:
+            duration = f.time_arr - f.time_dep
+        else:
+            duration = f.time_arr + (24 * 60 - f.time_dep)
     except AttributeError:
-        print("Wrong parameters. Provide a Flight object.")
-
-    # If the arrival time its not higher than the departure time it must be an error, we inform of it
-    if duration <= 0:
-        print("Wrong dep/arr times.")
+        print(" [ERROR] (flight_duration) Wrong parameters. Provide a Flight object.")
+        return
     
     return duration
 
@@ -158,7 +155,7 @@ def delay_flight(f, d):
         else:
             return False
     except AttributeError:
-        print("Wrong parameters. Please provide a Flight object and an integer.")
+        print(" [ERROR] (delay_flight) Wrong parameters. Please provide a Flight object and an integer.")
         return False
     
 def check_overlap(f1, f2, interval=60):
@@ -173,13 +170,32 @@ def check_overlap(f1, f2, interval=60):
     Tested by Pol Roca on May 9th 2020
     """
     try:
-        if ((f1.time_dep <= f2.time_dep - interval and f1.time_arr <= f2.time_dep - interval) or
-            (f1.time_dep >= f2.time_arr + interval and f1.time_arr >= f2.time_arr + interval)):
-            return False
+        # Normal case: none of the aircrafts crosses through midnight
+        if f1.time_dep <= f1.time_arr and f2.time_dep <= f2.time_arr:
+            if ((f1.time_dep <= f2.time_dep - interval and f1.time_arr <= f2.time_dep - interval) or
+                (f1.time_dep >= f2.time_arr + interval and f1.time_arr >= f2.time_arr + interval)):
+                return False
+            else:
+                return True
+        # Especial cases: any of the aircrafts crosses through midnight
+        # If its the first one who crosses
+        elif f1.time_dep > f1.time_arr:
+            if f2.time_arr <= f1.time_dep - 60 and f2.time_dep >= f1.time_arr + 60:
+                return False
+            else:
+                return True
+        # If its the second one who crosses
+        elif f1.time_dep <= f1.time_arr and f2.time_dep > f2.time_arr:
+            if f1.time_arr <= f2.time_dep - 60:
+                return False
+            else:
+                return True
+        # If both cross, they of course collide
         else:
             return True
+
     except AttributeError:
-        print("Wrong Parameters, please provide a Flight")
+        print(" [ERROR] (check_overlap) Wrong Parameters, please provide a Flight")
         return False
     
 def check_overlap_list(f, vector_flight, interval=60):
@@ -199,11 +215,11 @@ def check_overlap_list(f, vector_flight, interval=60):
                 return True
         return False
     except AttributeError:
-        print("Wrong Parameters, please provide a Flight")
+        print(" [ERROR] (check_overlap_list) Wrong Parameters, please provide a Flight")
         return False
     
 def check_inner_overlap(vector_flight, interval=60):
-    """ Function check_overlap_list (f: Flight, vector_flight: list): bool
+    """ Function check_inner_overlap (vector_flight: list): bool
     =================================================
     Checks if there exists any overlap between the flights of a list
     vector_flight: list, a list of Flight objects
@@ -218,7 +234,7 @@ def check_inner_overlap(vector_flight, interval=60):
                 return True
         return False
     except AttributeError:
-        print("Wrong Parameters, please provide a Flight")
+        print(" [ERROR] (check_inner_overlap) Wrong Parameters, please provide a Flight")
         return False
     
 def plot_flight(f, show=True, title=None):
@@ -256,7 +272,7 @@ def plot_flight(f, show=True, title=None):
         if show:
             plt.show()
     except AttributeError:
-        print("Wrong Parameters, please provide a Flight")
+        print(" [ERROR] (plot_flight)Wrong Parameters, please provide a Flight")
         return
 
 def plot_flights(vf, title=None):
@@ -344,15 +360,15 @@ def read_flights(f):
                 except KeyError:
                     pass
                 except ValueError:
-                    print("Wrong format at line", i)
+                    print("[read_flights] Wrong format at line", i)
                 else:
                     flights.append(fl)
         return flights
     except FileNotFoundError:
-        print("File couldn't be found.")
+        print("[read_flights] File couldn't be found.")
         return
     except PermissionError:
-        print("You don't have permissions over that file.")
+        print("[read_flights] You don't have permissions over that file.")
         return
 
 def map_flights(vf,va):

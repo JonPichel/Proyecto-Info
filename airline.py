@@ -32,7 +32,7 @@ def show_airline(a):
         operations = a.operations
         assignments = a.assignments
     except AttributeError:
-        print("Wrong parameters. Provide an Airline object.")
+        print(" [ERROR] (show_airline) Wrong parameters. Provide an Airline object.")
         return
     print("Airline information:")
     print("Name:", name)
@@ -68,7 +68,7 @@ def add_aircraft(a, ac):
         a.aircrafts.append(ac)
         return True
     except AttributeError:
-        print("Wrong parameters, please provide an Airline and an Aircraft")
+        print(" [ERROR] (add_aircraft) Wrong parameters, please provide an Airline and an Aircraft")
         return False
         
 def add_operation(a,f):
@@ -89,7 +89,7 @@ def add_operation(a,f):
         a.operations.append(f)
         return True
     except AttributeError:
-        print("Wrong parameters, please provide an Airline and a Flight")
+        print(" [ERROR] (add_operation) Wrong parameters, please provide an Airline and a Flight")
         return False
 
 def insert_delay(a, depAp, depTm, d):
@@ -112,7 +112,7 @@ def insert_delay(a, depAp, depTm, d):
                 return True
         return False                                                        # If the flight doesn't match returns False
     except AttributeError:
-        print("Wrong parameters.")
+        print(" [ERROR] (insert_delay) Wrong parameters.")
         return False
 
 def check_operations(a, interval=60):
@@ -147,7 +147,7 @@ def check_operations(a, interval=60):
                 return False
             return True
     except AttributeError:
-        print("Wrong Parameters.")
+        print(" [ERROR] (check_operations) Wrong Parameters.")
         return False
     
 def plot_flights(a, title=None):
@@ -159,10 +159,11 @@ def plot_flights(a, title=None):
     Created by Adrià Vaquer on May 5th 2020
     Tested by Raúl Criado on May 6th 2020
     """
-    if type(a) == Airline:
+    try:
         flight.plot_flights(a.operations, title=title)
-    else:
-        print("Wrong Parameters, please provide an Airline")
+    except AttributeError:
+        print(" [ERROR] (plot_flights) Wrong Parameters, please provide an Airline")
+        return
 
 def plot_assignments(a, title=None):
     """Function plot_assignments (a: airline)
@@ -177,7 +178,7 @@ def plot_assignments(a, title=None):
         # We call the plot_assignments function to add it to the class airline
         assignment.plot_assignments(a.assignments, title=title)
     except AttributeError:
-        print("Wrong Parameters, please provide an Assignment")
+        print(" [ERROR] (plot_assignments) Wrong Parameters, please provide an Assignment")
         return False
 
 def assign_operations(a):
@@ -195,7 +196,7 @@ def assign_operations(a):
         flights = a.operations[:]
         assignments = []
     except AttributeError:
-        print("Wrong Parameters, please provide an Assignment, an Aircraft and a Flight")
+        print(" [ERROR] (assign_operations) Wrong Parameters, please provide an Assignment, an Aircraft and a Flight")
         return False
     # Create an assignment for each aircraft
     for i in range(len(aircrafts)):
@@ -231,8 +232,9 @@ def write_day_plan(a, f):
     Created by Jonathan Pichel on May 11th 2020
     """
     try:
-        output = open('f', 'w')
-    except:
+        output = open(f, 'w')
+    except PermissionError:
+        print(" [ERROR] (write_day_plan) You don't have permissions over that file.")
         return
     
     output.write(f"Today operations of {a.name}\n\n")
@@ -267,7 +269,7 @@ def calculate_day_cost(a,vp):
                     return (-1)
             
     except AttributeError:
-        print("Wrong Parameters, please provide an Assignment or an Airport")
+        print(" [ERROR] (calculate_day_costs) Wrong Parameters, please provide an Assignment or an Airport")
         return False
 
 def read_airline(f):
@@ -279,7 +281,7 @@ def read_airline(f):
     """
     try:
         a = Airline()
-        file = open(f,'r')
+        file = open(f, 'r')
 
         lines = [line.strip() for line in file.readlines()]
         a.name = lines[0]
@@ -287,8 +289,8 @@ def read_airline(f):
         a.operations = flight.read_flights(lines[2])
         return a
     except FileNotFoundError:
-        print("File couldn't be found.")
+        print(" [ERROR] (read_airline) File couldn't be found.")
         return
     except PermissionError:
-        print("You don't have permissions over that file.")
+        print(" [ERROR] (read_airline) You don't have permissions over that file.")
         return
