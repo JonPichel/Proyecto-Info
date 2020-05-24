@@ -70,3 +70,6 @@ def read_aircrafts(f):
     except FileNotFoundError:
         print("File couldn't be found.")
         return
+    except PermissionError:
+        print("You don't have permissions over that file.")
+        return

@@ -277,12 +277,18 @@ def read_airline(f):
     f: String, the name of the file
     Created by Pol Roca on May 18th 2020
     """
+    try:
+        a = Airline()
+        file = open(f,'r')
 
-    a = Airline()
-    F = open(f,'r')
-
-    x = [line.strip() for line in F.readlines()]
-    a.name = x[0]
-    a.aircrafts = aircraft.read_aircrafts(x[1])
-    a.operations = flight.read_flights(x[2])
-    return a
+        lines = [line.strip() for line in file.readlines()]
+        a.name = lines[0]
+        a.aircrafts = aircraft.read_aircrafts(lines[1])
+        a.operations = flight.read_flights(lines[2])
+        return a
+    except FileNotFoundError:
+        print("File couldn't be found.")
+        return
+    except PermissionError:
+        print("You don't have permissions over that file.")
+        return

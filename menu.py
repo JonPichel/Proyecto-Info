@@ -60,12 +60,20 @@ def plot_menu():
     option = input("What do you want to plot?: ")
     if option == 'a':
         name = input("Name of the airline: ")
-        al, = (a for a in airlines if a.name == name)
-        airline.plot_assignments(al, title=f"Assignments of {al.name}")
+        al = [a for a in airlines if a.name == name]
+        if al:
+            print(f"Plotting flights for {al[0].name}")
+            airline.plot_assignments(al[0], title=f"Assignments of {al[0].name}")
+        else:
+            print("No airline found with name", name)
     elif option == 'f':
         name = input("Name of the airline: ")
-        al, = (a for a in airlines if a.name == name)
-        airline.plot_flights(al, title=f"Flights of {al.name}")
+        al = [a for a in airlines if a.name == name]
+        if al:
+            print(f"Plotting flights for {al[0].name}")
+            airline.plot_flights(al[0], title=f"Flights of {al[0].name}")
+        else:
+            print("No airline found with name", name)
     elif option == 'q':
         pass
 
@@ -75,6 +83,7 @@ def view_information():
         print("Viewing options:\n")
         print("(l) airlines")
         print("(p) airports")
+        print("(f) search for a flight")
         print("(q) quit to main menu")
         
         option = input("What information do you want to display?: ")
@@ -94,6 +103,59 @@ def view_information():
                         break
             else:
                 print("No airports in memory.\n")
+        elif option == 'f':
+            while True:
+                print("Searching options (you can combine them):\n")
+                print("(l) provide airline name")
+                print("(p) provide departure and/or arrival airports")
+                print("(t) provide departure and/or arrival times")
+                print("(q) return to view menu")
+                option = input("Choose parameter to search from: ")
+                if 'q' in option:
+                    break
+                if 'l' in option:
+                    al = input("Airline name: ")
+                else:
+                    al = ""
+                if 'p' in option:
+                    dep = input("Departure airport: ")
+                    arr = input("Arrival airport: ")
+                else:
+                    dep = ""
+                    arr = ""
+                if 't' in option:
+                    time_dep = input("Departure time: ")
+                    time_arr = input("Arrival time: ")
+                else:
+                    time_dep = ""
+                    time_arr = ""
+                if al:
+                    results = {fl: line.name for line in airlines for fl in line.operations if line.name == al}
+                    if not results:
+                        print("No airline stored with the name", al)
+                        continue
+                else:
+                    results = {fl: line.name for line in airlines for fl in line.operations}
+                if dep:
+                    results = {fl: results[fl] for fl in results if fl.dep == dep}
+                if arr:
+                    results = {fl: results[fl] for fl in results if fl.arr == arr}
+                if time_dep:
+                    results = {fl: results[fl] for fl in results if fl.time_dep == time_dep}
+                if time_arr:
+                    results = {fl: results[fl] for fl in results if fl.time_arr == time_arr}
+                print(len(results), "results found.")
+                lines = {name: [fl for fl in results if results[fl] == name] for name in set(results.values())}
+                for line in lines:
+                    if input(f"From {line} (enter to show, q to break):") == 'q':
+                        break
+                    for fl in lines[line]:
+                        flight.show_flight(fl)
+                    print()
+                print()
+                
+
+
         elif option == 'q':
             break
 
@@ -145,4 +207,4 @@ while True:
     elif option == 'e':
         break
     else:
-        print('Invalid option\n')
+        input('Invalid option\n')

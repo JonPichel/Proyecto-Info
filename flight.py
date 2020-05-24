@@ -35,10 +35,6 @@ def format_time(t, colon=True):
         hours = int(t // 60)
         mins = int(t % 60)
     
-        # If the time is outside the hour day range, correct it
-        if hours > 23 or hours < 0:
-            hours %= 24
-    
         # We use string formatting to avoid unnecessary code
         if colon:
             return f"{hours:02}:{mins:02}"
@@ -59,14 +55,14 @@ def convert_time(hhmm):
     try:
         # We use lstrip to remove the starting zeros in case
         # there is one, to avoid an invalid literal error
-        hours = int(hhmm[:2].lstrip('0'))
-        mins = int(hhmm[2:].lstrip('0'))
+        hours = int(hhmm[:2].lstrip('0')) if hhmm[:2].lstrip('0') else 0
+        mins = int(hhmm[2:].lstrip('0')) if hhmm[2:].lstrip('0') else 0
     except IndexError:
         # We pass here because we want to print the same message in both errors
         pass
     except ValueError:
         # This will be printed if there is an IndexError too
-        print("Wrong data format. Provide a hour in HHMM format.")
+        print(f"Wrong data format: {hhmm}. Provide a hour in HHMM format.")
         return
 
     # Return the number of minutes
@@ -237,7 +233,13 @@ def plot_flight(f, show=True, title=None):
     """
     try:
         # Plot the flight
-        plt.barh(f"{f.dep}\n{f.arr}", flight_duration(f), left=f.time_dep, color='lightblue')
+        if f.time_dep <= f.time_arr:
+            # Normal case
+            plt.barh(f"{f.dep}\n{f.arr}", flight_duration(f), left=f.time_dep, color='lightblue')
+        else:
+            # Maybe it crosses through midnight
+            plt.barh(f"{f.dep}\n{f.arr}", 24 * 60 - f.time_dep, left=f.time_dep, color='lightblue')
+            plt.barh(f"{f.dep}\n{f.arr}", f.time_arr, left=0, color='lightblue')
     
         # Plot customization
         # Set the ticks and give them labels
@@ -319,9 +321,6 @@ def check_airports(vf):
         print("Wrong Parameters, please provide a list of Flights")
         return
 
-if __name__ == '__main__':
-    print(convert_time("hell"))
-
 def read_flights(f):
     """ Function read_flights (f: string)
     =================================================
@@ -330,53 +329,69 @@ def read_flights(f):
     Return: vector of flights, a vector with the flights of the text file
     Created by Adrià Vaquer on 11th May 2020
     """
-    vec_flights=[]
+    flights = []
     try:
-        F=open(f,"r")
-        line=F.readline()
-        while line != "":
-            line=F.readline()
-            elements=line.split(" ")
-            if elements[0]=="":
-                break
-            fli = Flight()
-            fli.time_dep=int(elements[0])
-            fli.time_arr=int(elements[1])
-            fli.dep=elements[2]
-            fli.arr=elements[3]
-            fli.passengers=int(elements[4])
-            vec_flights.append(fli)
-        x=0
-        first = True
-        position=1
-        for i in vec_flights:                   #Here we are seeing if the time departure is wrong
-            if i.time_dep < vec_flights[x-1].time_dep and first == False:
-                print("The line",position,"has an error in the departure time")
-                vec_flights.remove(i)
-            first=False
-            position+=1
-            x+=1
-        position = 1
-        for i in vec_flights:       #Here we are looking if the format is wrong
-            try:
-                int(i.time_dep)
-                int(i.time_arr)
-                int(i.passengers)
-            except ValueError:
-                print("Format Error in line",position)
-                vec_flights.remove(i)
-            try:
-                if int(i.dep) or int(i.arr):    #Here we are looking if the format is wrong
-                    print("Format Error in line",position)
-                    vec_flights.remove(i)
-            except ValueError:
-                x=0
-            position+=1
-        return vec_flights
+        for i, line in enumerate(open(f, 'r')):
+            if not line.startswith("TIMD TIMA"):
+                fl = Flight()
+                try:
+                    data = line.split()
+                    fl.time_dep = convert_time(data[0])
+                    fl.time_arr = convert_time(data[1])
+                    fl.dep = data[2]
+                    fl.arr = data[3]
+                    fl.passengers = int(data[4])
+                except KeyError:
+                    pass
+                except ValueError:
+                    print("Wrong format at line", i)
+                else:
+                    flights.append(fl)
+        return flights
     except FileNotFoundError:
-        print("The file doesn't exist, please provide a correct file.")
-        return vec_flights
+        print("File couldn't be found.")
+        return
+    except PermissionError:
+        print("You don't have permissions over that file.")
+        return
 
+def map_flights(vf,va):
+    """ Function map_flights (vf: vector of flights, va: vector of airports)
+    ==================================================
+    Creates a kml file that show the route of flights through the airports from the vector introduced
+    vf: vector of flights
+    va: vector of airports extracted from the file
+    Created by Raúl Criado on May 19th 2020
+    """
+    try:
+        with open("Operations.kml", "w") as f:
+            f.write('<kml xmlns="http://www.opengis.net/kml/2.2">\n')
+            f.write("<Document>\n")
+            f.write(" <Placemark>\n")
+            f.write("   <name>Route</name>\n")
+            f.wrtie("   <LineString>")
+            f.write("    <extrude>1</extrude>\n")
+            f.write("     <coordinates>\n")
+            m = 0
+            for i in vf:
+                for v in va:
+                    if i.dep == v.code:    
+                        f.write("       "+v.location+"\n")
+                    else:
+                        m+=1                                
+            f.write("     </coordinates>\n")
+            f.write("  </LineString>\n")
+            f.write(" </Placemark>\n")
+            f.write("</Document>\n")
+            f.write("</kml>\n")
+
+        if m == len(vf):
+            print('Airport cannot be found')
+            return False
+
+    except AttributeError:
+        print("Wrong parameters. Provide an Airport object.")
+        return False
 
 def map_flights(vf,va):
     """ Function map_flights (vf: vector of flights, va: vector of airports)

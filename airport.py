@@ -54,26 +54,33 @@ def read_airports(f):
     Returns: list containing the airports that were created
     Created by Jonathan Pichel on May 11th 2020
     """
-    # We iterate through all the lines of the file
-    airports = []
-    # We enumerate the iteration to be able to communicate errors to the user
-    for i, line in enumerate(open(f, 'r')):
-        # We don't process the header, in case there is one
-        if not line.startswith('AIRP'):
-            words = line.split()
-            try:
-                code = words[0]
-                location = words[1]
-                name = " ".join(words[2:])
-            except IndexError:
-                print(f"Wrong format at line {i + 1}.")
-            # If there was no errors, add the airport
-            else:
-                a = Airport()
-                set_ap_info(a, code, name, location)
-                airports.append(a)
+    try:
+        # We iterate through all the lines of the file
+        airports = []
+        # We enumerate the iteration to be able to communicate errors to the user
+        for i, line in enumerate(open(f, 'r')):
+            # We don't process the header, in case there is one
+            if not line.startswith('AIRP'):
+                words = line.split()
+                try:
+                    code = words[0]
+                    location = words[1]
+                    name = " ".join(words[2:])
+                except IndexError:
+                    print(f"Wrong format at line {i + 1}.")
+                # If there was no errors, add the airport
+                else:
+                    a = Airport()
+                    set_ap_info(a, code, name, location)
+                    airports.append(a)
 
-    return airports
+        return airports
+    except FileNotFoundError:
+        print("File couldn't be found.")
+        return
+    except PermissionError:
+        print("You don't have permissions over that file.")
+        return
 
 def show_airport(ap):
     """ Function show_airport (ap: Airport)
