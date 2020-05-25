@@ -431,8 +431,10 @@ def map_flights(vf,va):
                 for v in va:
                     if vf[i].dep == va[v].code:    
                         f.write("       "+va[v].location+"\n")
+                        v+=1
                     else:
-                        m+=1                                
+                        m+=1
+                i+=1
             f.write("     </coordinates>\n")
             f.write("  </LineString>\n")
             f.write(" </Placemark>\n")
