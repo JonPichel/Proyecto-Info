@@ -28,6 +28,14 @@ def plot_assignment(assig, show=True, title=None):
         # Plot every flight
         for f in assig.flights:
             plt.barh(assig.aircraft.callsign, flight.flight_duration(f), left=f.time_dep, color='lightblue')
+            # Plot the flight
+            if f.time_dep <= f.time_arr:
+                # Normal case
+                plt.barh(assig.aircraft.callsign, flight.flight_duration(f), left=f.time_dep, color='lightblue')
+            else:
+                # Maybe it crosses through midnight
+                plt.barh(assig.aircraft.callsign, 24 * 60 - f.time_dep, left=f.time_dep, color='lightblue')
+                plt.barh(assig.aircraft.callsign, f.time_arr, left=0, color='lightblue')
     
         # Plot customization
         # Set the ticks and give them labels
@@ -104,20 +112,22 @@ def assign_flight(assig, f):
     """
     try:
         time_dep = f.time_dep
-        # If it is the first flight, compare it with the last flight
-        # Especial case, Check if the list is empty first
         if assig.flights:
             prev = flight.sort_flights(assig.flights)[-1].arr
             for fl in flight.sort_flights(assig.flights):
-                if fl.time_dep < time_dep:
+                if fl.time_dep > time_dep:
                     break
                 prev = fl.arr
+        # Especial case, Check if the list is empty first
         else:
             prev = f.dep
 
         if flight.fits_flight_in_aircraft(f, assig.aircraft):
             if not flight.check_overlap_list(f, assig.flights):
-                if prev == f.dep:
+                if not assig.flights:
+                    assig.flights.append(f)
+                    return True
+                if flight.sort_flights(assig.flights)[-1].arr == f.dep:
                     assig.flights.append(f)
                     return True
         return False
@@ -153,8 +163,9 @@ def write_assignment(assig):
     Return: str, Assignment data properly formatted
     Created by Jonathan Pichel on April 11th 2020
     """
-    string = f"Flights assigned to aircraft {assig.aircraft.callsign} are:\n"
+    string = f"Flights assigned to aircraft {assig.aircraft.callsign} ({assig.aircraft.seats} seats) are:\n"
     for f in assig.flights:
         # We use format_time with colon set to false
         string += f"\t{flight.format_time(f.time_dep, colon=False)} {flight.format_time(f.time_arr, colon=False)}"
         string += f" {f.dep} {f.arr} {f.passengers}\n"
+    return string

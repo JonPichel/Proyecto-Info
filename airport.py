@@ -63,17 +63,25 @@ def read_airports(f):
             if not line.startswith('AIRP'):
                 words = line.split()
                 try:
+                    if len(words) < 3:
+                        raise ValueError
                     code = words[0]
+                    if len(code) != 4:
+                        raise ValueError
                     location = words[1]
+                    if len(location.split(',')) != 2:
+                        raise ValueError
+                    # Check if coordinates are numbers
+                    float(location.split(',')[0])
+                    float(location.split(',')[1])
                     name = " ".join(words[2:])
-                except IndexError:
+                except (ValueError, IndexError) as format_error:
                     print(f"Wrong format at line {i + 1}.")
                 # If there was no errors, add the airport
                 else:
                     a = Airport()
                     set_ap_info(a, code, name, location)
                     airports.append(a)
-
         return airports
     except FileNotFoundError:
         print("File couldn't be found.")
@@ -174,7 +182,7 @@ def search_airport_index(v,s):
     except AttributeError:
         print("Wrong Parameters, please provide a vector of airports")
 
-def calculate_fee(ap,t):
+def calculate_fee(ap, t):
     """ Function calculate_fee (ap: Airport, t: Integer)
     =================================================
     Calculates the cost of the airport
@@ -184,17 +192,17 @@ def calculate_fee(ap,t):
     Created by Adrià Vaquer on 11th May 2020
     """
     try:    
-        cost=0
-        cost=cost+ap.fees
-        if t/60 > ap.free_hours:
-            extra_cost= (t/60-ap.free_hours)*ap.cost_per_hour
-        cost+=extra_cost
+        cost = 0
+        cost = cost + ap.fees
+        if t / 60 > ap.free_hours:
+            extra_cost = (t / 60 - ap.free_hours) * ap.cost_per_hour
+        cost += extra_cost
         return cost
     except AttributeError:
         print("Wrong Parameters, please provide an Airport")
-        return 0
+        return
 
-def read_airport_costs(v,f):
+def read_airport_costs(v, f):
     """ Function read_airport_costs (v: vector of airports, f: string):
     ===================================================
     this function reads the content of the file f to sets the costs of the airports in the vector v. 
@@ -202,39 +210,30 @@ def read_airport_costs(v,f):
     v: Vector of airports
     Created by Pol Roca on May 18th 2020
     """
-
     try:
-
-        F=open(f,'r')
-
-        airport_costs=F.readlines()
-        airport_costs=airport_costs[1:]
-
-        contador=0
-
-        for i in airport_costs:
-            try:
-                y=airport_costs[contador].split()
-                z=y[3].replace('/n','')
-                code=y[0]
-                runway=int(y[1])
-                free=int(y[2])
-                costxhh=int(z)
-            except:
-                print("The format of the file is not valid")
-                continue
-            position=search_airport_index(v,code)
-            if position!=-1:
-                v[position].fees=runway
-                v[position].free_hours=free
-                v[position].cost_per_hour=costxhh
-            else:
-                print("The airport in the costs file was not found in the vector")
-                a=Airport()
-                set_costs(a, runway, free, costxhh)
-                v.append(a)
-            contador+=1
-
+        # We enumerate the iteration to be able to communicate errors to the user
+        for i, line in enumerate(open(f, 'r')):
+            # We don't process the header, in case there is one
+            if not line.startswith('AIRP'):
+                words = line.split()
+                try:
+                    if len(words) != 4:
+                        raise IndexError
+                    code = words[0]
+                    runway = int(words[1])
+                    free = int(words[2])
+                    cph = int(words[3])
+                except (IndexError, ValueError) as format_error:
+                    print(f" [ERROR] (read_airport_costs) Wrong format at line {i + 1}.")
+                    continue
+                # If there was no errors, add the airport
+                else:
+                    position = search_airport_index(v, code)
+                    if position != -1:
+                        set_costs(v[position], runway, free, cph)
     except FileNotFoundError:
-        print("This file doesn't exist, please enter a correct file")
-        return []
+        print("[ERROR] (read_airport_costs) File couldn't be found.")
+        return
+    except PermissionError:
+        print(" [ERROR] (read_airport_costs) You don't have permissions over that file.")
+        return

@@ -295,7 +295,7 @@ def plot_flights(vf, title=None):
         print("Wrong Parameters, please provide a Flight list")
         return False
 
-def sort_flights(vf):
+def sort_flights(vf, potential=False):
     """Function sort_flights (vf: list of Flights)
     ===================================================
     Given a list of flights, it sorts the flights by time of departure and returns the sorted list
@@ -306,7 +306,13 @@ def sort_flights(vf):
     """
     try:
         # I use the sorted builtin to sort the flights by time of departure
-        return sorted(vf, key=lambda f: f.time_dep)
+        if potential:
+            srtd = sorted(vf, key=lambda f: chain_potential(f, vf), reverse=True)
+            print(srtd[0].potential)
+            print(srtd[-1].potential)
+        else:
+            srtd = sorted(vf, key=lambda f: f.time_dep)
+        return srtd
     except AttributeError:
         print("Wrong Parameters, please provide a list of Flights")
         return
@@ -352,23 +358,23 @@ def read_flights(f):
                 fl = Flight()
                 try:
                     data = line.split()
+                    if len(data) != 5:
+                        raise IndexError
                     fl.time_dep = convert_time(data[0])
                     fl.time_arr = convert_time(data[1])
                     fl.dep = data[2]
                     fl.arr = data[3]
                     fl.passengers = int(data[4])
-                except KeyError:
-                    pass
-                except ValueError:
-                    print("[read_flights] Wrong format at line", i)
+                except (IndexError, ValueError) as format_error:
+                    print(f"[ERROR] (read_flights) Wrong format at line {i + 1}.")
                 else:
                     flights.append(fl)
         return flights
     except FileNotFoundError:
-        print("[read_flights] File couldn't be found.")
+        print(" [ERROR] (read_flights) File couldn't be found.")
         return
     except PermissionError:
-        print("[read_flights] You don't have permissions over that file.")
+        print(" [ERROR] (read_flights) You don't have permissions over that file.")
         return
 
 def map_flights(vf,va):

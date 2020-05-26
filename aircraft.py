@@ -52,6 +52,8 @@ def read_aircrafts(f):
             if not line.startswith('CALLSIGN AC-TYPE SEATS'):
                 words = line.split()
                 try:
+                    if len(words) != 3:
+                        raise IndexError
                     callsign = words[0]
                     model = words[1]
                     seats = int(words[2])

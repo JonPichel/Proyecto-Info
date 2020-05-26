@@ -201,10 +201,11 @@ def assign_operations(a):
     # Create an assignment for each aircraft
     for i in range(len(aircrafts)):
         assig = assignment.Assignment()
-        assig.aircraft = aircrafts[i]
+        assignment.assign_aircraft(assig, aircrafts[i])
         assignments.append(assig)
+    sorted_flights = flight.sort_flights(flights)
     for i in range(len(flights)):
-        f = flight.sort_flights(flights)[i]
+        f = sorted_flights[i]
         for j in range(len(assignments)):
             assig = assignments[j]
             if assignment.assign_flight(assig, f):
@@ -223,25 +224,39 @@ def assign_operations(a):
     return new
 
 def write_day_plan(a, f):
-    """Function write_day_plan (a: airline, f: str): bool
+    """Function write_day_plan (a: Airline, f: str): bool
     ===================================================
     Reads from a file that contains the information about some airports, and creates them
     Writes the information about the assignments and operations of the day of an airline to a file.
+    a: Airline, airline whose information will be stored
     f: str, name of the file where data is stored
     Returns: list containing the airports that were created
     Created by Jonathan Pichel on May 11th 2020
     """
     try:
         output = open(f, 'w')
+        output.write(f"Today operations of {a.name}\n\n")
+        for assig in a.assignments:
+            output.write(assignment.write_assignment(assig))
+        # Show also the unassigned flights
+        unassigned = []
+        for fl in a.operations:
+            for assig in a.assignments:
+                if fl in assig.flights:
+                    break
+            else:
+                unassigned.append(fl)
+        if unassigned:
+            output.write(f"{len(unassigned)} flights not assigned:\n")
+            for fl in unassigned:
+                output.write(f"\t{flight.format_time(fl.time_dep, colon=False)} {flight.format_time(fl.time_arr, colon=False)}")
+                output.write(f" {fl.dep} {fl.arr} {fl.passengers}\n")
+
+        output.close()
+        return True
     except PermissionError:
         print(" [ERROR] (write_day_plan) You don't have permissions over that file.")
-        return
-    
-    output.write(f"Today operations of {a.name}\n\n")
-    for assig in a.assignments:
-        output.write(assignment.write_assignment(assig))
-    
-    output.close()
+        return False
 
 def calculate_day_cost(a,vp):
     """Function calculate_day_cost(a,vp):
@@ -284,9 +299,15 @@ def read_airline(f):
         file = open(f, 'r')
 
         lines = [line.strip() for line in file.readlines()]
+        if len(lines) != 3:
+            print(" [ERROR] (read_airline) Wrong format.")
+            return
         a.name = lines[0]
         a.aircrafts = aircraft.read_aircrafts(lines[1])
         a.operations = flight.read_flights(lines[2])
+        if a.aircrafts == None or a.operations == None:
+            print(" [ERROR] (read_airline) Wrong format or unreachable subfiles.")
+            return
         return a
     except FileNotFoundError:
         print(" [ERROR] (read_airline) File couldn't be found.")

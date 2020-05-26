@@ -1,37 +1,144 @@
 import airline, aircraft, airport, assignment, flight
 
-def initialize_data():
-    while True:
-        print("Reading options:\n")
+def prompt(*vargs):
+    msg = " [P]"
+    for arg in vargs:
+        msg += f" {arg}"
+    msg += ": "
+    return input(msg)
+
+def success(*vargs):
+    msg = " [S]"
+    for arg in vargs:
+        msg += f" {arg}"
+    input(msg)
+
+def failure(*vargs):
+    msg = " [F]"
+    for arg in vargs:
+        msg += f" {arg}"
+    input(msg)
+
+def verbose(*message):
+    print(" [*]", *message)
+
+def wrong_option():
+    input("Invalid option")
+
+def show_help(screen):
+    if screen == 'main':
+        print("Users menu OPTIONS:\n")
+        print("\t--initialize --")
+        print("(i) read all data from the input files into the necessary main variables\n")
+        print("\t--modification options--")
+        print("(a) assign flights to the airline aircraft")
+        print("(c) calculate current operational cost related to airports services") 
+        print("(d) enter a delay and check assignments\n")
+        print("\t--output options--")
+        print("(s) show airline information in the screen and the cost of the day operations") 
+        print("(k) write KML files of airports, flights and assignments")
+        print("(p) plot the flights and the assignments of the airline")
+        print("(v) view information about some object")
+        print("(w) write current airline assignment into a file\n")
+        print("\t--end option--")
+        print("(e) end program")
+        print("(h) show this help screen")
+    if screen == 'read':
+        print("Reading options:")
         print("(l) airline")
         print("(p) airports")
-        print("(d) airport data")
+        print("(c) airports costs")
+        print("\nOther OPTIONS:")
+        print("(h) show this help screen")
         print("(q) quit to main menu")
+    elif screen == 'assign':
+        pass
+    elif screen == 'kml':
+        pass
+    elif screen == 'plot':
+        pass
+    elif screen == 'view':
+        pass
+    elif screen == 'write':
+        print("Write day plan for an airline:")
+        print("\t(1) choose an airline")
+        print("\t(2) choose filename")
+        print("\nOther OPTIONS:")
+        print("(h) show this help screen")
+        print("(q) return to main menu")
 
-        option = input("What type of file do you want to read from?: ")
+def read_menu():
+    # Show help the first time
+    print()
+    show_help('read')
+    # Read menu loop
+    while True:
+        # Ask for an option
+        print("\n[Main -> Read Menu]")
+        option = prompt("What type of file do you want to read from?")
         # Initialize airline
         if option == 'l':
-            filename = input("Name of the file to read from: ")
+            print("\n[Main -> Read Menu -> Airline]")
+            filename = prompt("Name of the file to read from")
             al = airline.read_airline(filename)
             if al:
-                airlines.append(airline.read_airline(filename))
-                input("Airline correctly initialized.")
+                # If there is one of more airlines with the same name already stored
+                duplicates = [a for a in airlines if a.name == al.name]
+                if duplicates:
+                    # We delete them and append the new/actualized one
+                    verbose("Removing previous instances of airline", al.name)
+                    for a in duplicates:
+                        airlines.remove(a)
+                airlines.append(al)
+                success("Airline correctly initialized.")
             else:
-                input("There was an error reading the file.\n")
-        # Initialize airport
+                failure("There was an error reading the file.")
+        # Initialize airports
         elif option == 'p':
-            filename = input("Filename to read from: ")
+            print("\n[Main -> Read Menu -> Airports]")
+            filename = prompt("Name of the file to read from")
             new_airports = airport.read_airports(filename)
-            for ap in new_airports:
-                if airport.search_airport_index(airports, ap.code) == -1:
-                    print(f"Succesfully added airport: {ap.code}")
-                    airports.append(ap)
-        # Initialize airport data
-        elif option == 'd':
-            filename = input("Filename to read from: ")
+            if new_airports:
+                for ap in new_airports:
+                    old_index = airport.search_airport_index(airports, ap.code)
+                    if old_index == -1:
+                        airports.append(ap)
+                        verbose(f"Succesfully added airport: {ap.code}")
+                    else:
+                        old_ap = airports[old_index]
+                        if old_ap.location != ap.location or old_ap.name != ap.name:
+                            verbose(f"Updating data on airport: {ap.code}")
+                            airports[old_index].location = ap.location
+                            airports[old_index].name = ap.name
+                success("Airports correctly initialized.")
+            else:
+                failure("Couln't initialize any airport.")
+        # Initialize airports costs
+        # TODO
+        elif option == 'c':
+            print("\n[Main -> Read Menu -> Airport Costs]")
+            filename = prompt("Name of the file to read from")
+            # We store the airports data to compare which airports have changed
+            old_data = [[ap.fees, ap.free_hours, ap.cost_per_hour] for ap in airports]
             airport.read_airport_costs(airports, filename)
+            num = 0
+            for i in range(len(airports)):
+                if (old_data[i][0] != airports[i].fees or old_data[i][1] != airports[i].free_hours or
+                    old_data[i][2] != airports[i].cost_per_hour):
+                    verbose(f"Updated the costs for {airports[i].code}.")
+                    num += 1
+            if num:
+                success(f"Updated the costs for {num} airports.")
+            else:
+                failure("Couldn't update any airport.")
+        # Show help screen
+        elif option == 'h':
+            show_help('read')
+        # Break to main menu
         elif option == 'q':
             break
+        else:
+            wrong_option()
 
 def assign_flights():
     while True:
@@ -94,8 +201,7 @@ def plot_menu():
     elif option == 'q':
         pass
 
-
-def view_information():
+def view_menu():
     while True:
         print("Viewing options:\n")
         print("(l) airlines")
@@ -176,52 +282,62 @@ def view_information():
         elif option == 'q':
             break
 
-    
+def write_menu():
+    # Show help the first time
+    show_help('write')
+    # Write menu loop
+    while True:
+        # Ask for airline's name
+        name = input("Name of the airline: ")
+        # Show help screen
+        if name == 'h':
+            show_help('write')
+        # Break to main loop
+        elif name == 'q':
+            break
+        else:
+            # This list will return the results
+            al = [al for al in airlines if al.name == name]
+            if al:
+                filename = input("File to write to: ")
+                if airline.write_day_plan(al[0], filename):
+                    input(f"Day plan for {name} saved to {filename}")
+                else:
+                    input(f"An error has occurred.")
+            else:
+                input(f"No airline named {name}.")
 
-def print_options():
-    print('Users menu OPTIONS:\n')
-    print('\t--initialize --')
-    print('(i) read all data from the input files into the necessary main variables\n')
-    print('\t--modification options--')
-    print('(a) assign flights to the airline aircraft')
-    print('(c) calculate current operational cost related to airports services') 
-    print('(d) enter a delay and check assignments\n')
-    print('\t--output options--')
-    print('(s) show airline information in the screen and the cost of the day operations') 
-    print('(k) write KML files of airports, flights and assignments')
-    print('(p) plot the flights and the assignments of the airline')
-    print('(v) view information about some object')
-    print('(w) write current airline assignment into a file\n')
-    print('\t--end option--')
-    print('(e) end program\n')
-    return input('Please, select an option entering one of the letters: ')
-
-# Every option is mapped to a function
+# Every option of main menu is mapped to a function
 OPTIONS = {
-    'i': initialize_data,
+    'i': read_menu,
     'a': assign_flights,
     'c': None,
     'd': None,
     's': None,
     'k': kml_menu,
     'p': plot_menu,
-    'v': view_information,
-    'w': None
+    'v': view_menu,
+    'w': write_menu
 }
 
 airlines = []
 airports = []
 
 # Main loop
+show_help('main')
 while True:
-    option = print_options()
+    print("\n[Main]")
+    option = prompt("Please, select an option entering one of the letters")
     if option in OPTIONS:
         if OPTIONS[option]:
             OPTIONS[option]()
         else:
-            # If not yet implemented, we show a message
-            input('Not yet implemented. :)\n')
+            # TODO: If not yet implemented, we show a message
+            wrong_option()
     elif option == 'e':
+        print("Goodbye :)")
         break
+    elif option == 'h':
+        show_help('main')
     else:
-        input('Invalid option\n')
+        wrong_option()
