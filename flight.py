@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import airport
 
 class Flight:
     """ Flight ()
@@ -350,6 +351,7 @@ def read_flights(f):
     f: string, the name of the text file
     Return: vector of flights, a vector with the flights of the text file
     Created by Adrià Vaquer on 11th May 2020
+    Fixed and tested by Jonathan Pichel on May 24th 2020
     """
     flights = []
     try:
@@ -377,78 +379,62 @@ def read_flights(f):
         print(" [ERROR] (read_flights) You don't have permissions over that file.")
         return
 
-def map_flights(vf,va):
+def map_flights(vf, va, filename="Operations.kml"):
     """ Function map_flights (vf: vector of flights, va: vector of airports)
     ==================================================
     Creates a kml file that show the route of flights through the airports from the vector introduced
     vf: vector of flights
     va: vector of airports extracted from the file
     Created by Raúl Criado on May 19th 2020
+    Fixed and tested by Jonathan Pichel May 28th 2020
     """
     try:
-        with open("Operations.kml", "w") as f:
+        with open(filename, "w") as f:
             f.write('<kml xmlns="http://www.opengis.net/kml/2.2">\n')
             f.write("<Document>\n")
-            f.write(" <Placemark>\n")
-            f.write("   <name>Route</name>\n")
-            f.wrtie("   <LineString>")
-            f.write("    <extrude>1</extrude>\n")
-            f.write("     <coordinates>\n")
-            m = 0
-            for i in vf:
-                for v in va:
-                    if i.dep == v.code:    
-                        f.write("       "+v.location+"\n")
-                    else:
-                        m+=1                                
-            f.write("     </coordinates>\n")
-            f.write("  </LineString>\n")
-            f.write(" </Placemark>\n")
+            for fl in vf:
+                dep_index = airport.search_airport_index(va, fl.dep)
+                arr_index = airport.search_airport_index(va, fl.arr)
+                for i in [dep_index, arr_index]:
+                    if i == -1:
+                        print(f" [ERROR] (map_flights) Couldn't find airport {fl.dep}.")
+                        print(f"Not adding flight {fl.dep}-{fl.arr}.")
+                        break
+                    ap = va[dep_index]
+                    coords = ap.location.split(',')
+                    if len(coords) != 2:
+                        print(f" [ERROR] (map_airports) Wrong location data on airport {ap.code}.")
+                        print(f"Not adding flight {fl.dep}-{fl.arr}.")
+                        break
+                    try:
+                        float(coords[0])
+                        float(coords[1])
+                    except ValueError:
+                        print(f" [ERROR] (map_airports) Wrong location data on airport {ap.code}.")
+                        print(f"Not adding flight {fl.dep}-{fl.arr}.")
+                        break
+                # If we didn't break on the loop, no errors happened
+                else:
+                    dep = va[dep_index]
+                    arr = va[arr_index]
+                    f.write("\t<Placemark>\n")
+                    f.write(f"\t\t<name>Route {fl.dep} - {fl.arr}</name>\n")
+                    f.write("\t\t<LineString>\n")
+                    f.write("\t\t\t<altitudeMode>clampToGround</altitudeMode>\n")
+                    f.write("\t\t\t<extrude>1</extrude>\n")
+                    f.write("\t\t\t<tesselate>1</tesselate>\n")
+                    f.write("\t\t\t<coordinates>\n")
+                    f.write("\t" * 4 + dep.location + "\n")
+                    f.write("\t" * 4 + arr.location + "\n")
+                    f.write("\t\t\t</coordinates>\n")
+                    f.write("\t\t</LineString>\n")
+                    f.write("\t</Placemark>\n")
             f.write("</Document>\n")
             f.write("</kml>\n")
-
-        if m == len(vf):
-            print('Airport cannot be found')
-            return False
-
+            return True
     except AttributeError:
-        print("Wrong parameters. Provide an Airport object.")
+        print(" [ERROR] (map_flights) Wrong parameters. Provide a list of flights and a list of airports.")
         return False
-
-def map_flights(vf,va):
-    """ Function map_flights (vf: vector of flights, va: vector of airports)
-    ==================================================
-    Creates a kml file that show the route of flights through the airports from the vector introduced
-    vf: vector of flights
-    va: vector of airports extracted from the file
-    Created by Raúl Criado on May 19th 2020
-    """
-    try:
-        with open("Operations.kml", "w") as f:
-            f.write('<kml xmlns="http://www.opengis.net/kml/2.2">\n')
-            f.write("<Document>\n")
-            f.write(" <Placemark>\n")
-            f.write("   <name>Route</name>\n")
-            f.wrtie("   <LineString>")
-            f.write("    <extrude>1</extrude>\n")
-            f.write("     <coordinates>\n")
-            m = 0
-            for i in vf:
-                for v in va:
-                    if vf[i].dep == va[v].code:    
-                        f.write("       "+va[v].location+"\n")
-                    else:
-                        m+=1
-            f.write("     </coordinates>\n")
-            f.write("  </LineString>\n")
-            f.write(" </Placemark>\n")
-            f.write("</Document>\n")
-            f.write("</kml>\n")
-
-        if m == len(vf):
-            print('Airport cannot be found')
-            return False
-
-    except AttributeError:
-        print("Wrong parameters. Provide an Airport object.")
+    except IOError:
+        print(" [ERROR] (map_flights) Couldn't create the file.")
         return False

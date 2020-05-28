@@ -9,7 +9,7 @@ class Airport:
         self.cost_per_hour = 0
 
 def set_ap_info(ap, s1, s2, s3):
-    """Function set_ap_info (ap: Airport, s1: str, s2: str, s3:str):
+    """Function set_ap_info (ap: Airport, s1: str, s2: str, s3:str): bool
     ===================================================
     Given and airport and three strings containing the ICAO code (s1), the name (s2),
     and the location (s3) of the airport, it updates that airport information
@@ -17,15 +17,16 @@ def set_ap_info(ap, s1, s2, s3):
     s1: str, ICAO code of the airport
     s2: str, official name of the airport
     s3: str, coordinates of the airport
+    Created by Raúl Criado on May 15th 2020
+    Tested by Jonathan Pichel on May 20th 2020
     """
     try:
         ap.code = s1
         ap.name = s2
         ap.location = s3
-            
     except AttributeError:
-        print("Wrong parameters. Provide an Airport object.")
-        return False
+        print(" [ERROR] (set_ap_info) Wrong parameters. Provide an Airport object and data in strings.")
+        return
 
 def set_costs(ap, c1, c2, c3):
     """ Function set_costs(ap, c1, c2, c3)
@@ -36,6 +37,7 @@ def set_costs(ap, c1, c2, c3):
     c2: number of the free parking hours
     c3: number of the additional parking fees per hour
     Created by Raúl Criado on May 11th 2020
+    Tested by Jonathan Pichel on May 20th 2020
     """
     try:
         ap.fees = c1
@@ -43,8 +45,8 @@ def set_costs(ap, c1, c2, c3):
         ap.cost_per_hour = c3
             
     except AttributeError:
-        print("Wrong parameters. Provide an Airport object.")
-        return False
+        print(" [ERROR] (set_costs) Wrong parameters. Provide an Airport object and data in strings.")
+        return
 
 def read_airports(f):
     """Function read_airports (f: str): list
@@ -141,28 +143,42 @@ def map_airports(v):
     Creates a kml file that located all the airports from the vector introduced
     v: vector of airports extracted from the file
     Created by Raúl Criado on May 18th 2020
+    Fixed and tested by Jonathan Pichel on May 28th 2020
     """
     try:
         with open("Airports.kml", "w") as f:
             f.write('<kml xmlns="http://www.opengis.net/kml/2.2">\n')
             f.write("<Document>\n")
-            for i in v:
-                f.write("  <Placemark>"+' '+"<name>"+v[i].code+"</name>\n")
-                f.write("    <description>"+ v[i].name + "</description>\n")
-                f.write("    <Point>\n")
-                f.write("     <coordinates>\n")
-                f.write("       "+str(v[i].location)+"\n")
-                f.write("     </coordinates>\n")
-                f.write("    </Point>\n")
-                f.write("  </Placemark>\n")
-                f.write("</Document>\n")
+            for ap in v:
+                coords = ap.location.split(',')
+                if len(coords) != 2:
+                    print(f" [ERROR] (map_airports) Wrong location data on airport {ap.code}.")
+                    return False
+                try:
+                    float(coords[0])
+                    float(coords[1])
+                except ValueError:
+                    print(f" [ERROR] (map_airports) Wrong location data on airport {ap.code}.")
+                    return False
+                f.write("\t<Placemark>"+' '+"<name>"+ap.code+"</name>\n")
+                f.write("\t\t<description>"+ ap.name + "</description>\n")
+                f.write("\t\t<Point>\n")
+                f.write("\t\t\t<coordinates>\n")
+                f.write("\t" * 4 +str(ap.location)+"\n")
+                f.write("\t\t\t</coordinates>\n")
+                f.write("\t\t</Point>\n")
+                f.write("\t</Placemark>\n")
+            f.write("</Document>\n")
             f.write("</kml>\n")
-
+            return True
     except AttributeError:
-        print("Wrong parameters. Provide an Airport object.")
+        print(" [ERROR] (map_airports) Wrong parameters. Provide a list of Airports.")
+        return False
+    except IOError:
+        print(" [ERROR] (map_airports) Couldn't create the file.")
         return False
 
-def search_airport_index(v,s):
+def search_airport_index(v, s):
     """ Function search_airport_index (v: vector of Airport, s: String)
     =================================================
     Search the index of the desired airport
@@ -172,15 +188,12 @@ def search_airport_index(v,s):
     Created by Adrià Vaquer on 11th May 2020
     """
     try:
-        position=0
-        for airport in v:
-            if airport.code== s:
-                return position
-            position+=1
-        if position >= len(v):
-            return -1
+        for i in range(len(v)):
+            if v[i].code == s:
+                return i
+        return -1
     except AttributeError:
-        print("Wrong Parameters, please provide a vector of airports")
+        print(" [ERROR] (search_airport_index) Wrong Parameters, please provide a vector of airports")
 
 def calculate_fee(ap, t):
     """ Function calculate_fee (ap: Airport, t: Integer)
@@ -189,17 +202,22 @@ def calculate_fee(ap, t):
     ap: Airport, the airport we want to know its costs
     t: integer, the number of minutes we want to leave the aircraft
     Return: integer, the total cost
-    Created by Adrià Vaquer on 11th May 2020
+    Created by Adrià Vaquer on May 11th 2020
+    Tested by Jonathan Pichel on May 27th 2020
     """
     try:    
-        cost = 0
-        cost = cost + ap.fees
-        if t / 60 > ap.free_hours:
-            extra_cost = (t / 60 - ap.free_hours) * ap.cost_per_hour
-        cost += extra_cost
+        if t < 0:
+            print(" [ERROR] (calculate_fee) Negative time interval.")
+            return
+        cost = ap.fees
+        total_hours = t / 60
+        if total_hours > ap.free_hours:
+            paid_hours = total_hours - ap.free_hours
+            extra_cost = paid_hours * ap.cost_per_hour
+            cost += extra_cost
         return cost
     except AttributeError:
-        print("Wrong Parameters, please provide an Airport")
+        print(" [ERROR] (calculate_fee) Wrong Parameters, please provide an Airport")
         return
 
 def read_airport_costs(v, f):
@@ -209,6 +227,7 @@ def read_airport_costs(v, f):
     f: String, the name of the file
     v: Vector of airports
     Created by Pol Roca on May 18th 2020
+    Fixed and tested by Jonathan Pichel on May 25th
     """
     try:
         # We enumerate the iteration to be able to communicate errors to the user

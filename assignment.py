@@ -170,42 +170,21 @@ def write_assignment(assig):
         string += f" {f.dep} {f.arr} {f.passengers}\n"
     return string
 
-def map_assignment(assig,va):
+def map_assignment(assig, va):
     """ Function map_assignment (assig: Assignment, va: vector of airports)
     =================================================
     Returns a KML file with the route of the different assignments
     assig: Object of class Assignment
     va: Vector of airports
-    Return: str, Assignment data properly formatted
     Created by Raúl Criado on May 25th 2020
+    Fixed and tested by Jonathan Pichel on May 28th 2020
     """
     try:
-        with open("Operations.kml", "w") as f:
-            f.write('<kml xmlns="http://www.opengis.net/kml/2.2">\n')
-            f.write("<Document>\n")
-            f.write(" <Placemark>\n")
-            f.write("   <name>Route</name>\n")
-            f.wrtie("   <LineString>")
-            f.write("    <extrude>1</extrude>\n")
-            f.write("     <coordinates>\n")
-            m = 0
-            vf = assig.flight()
-            for i in vf:
-                for v in va:
-                    if vf[i].dep == va[v].code:    
-                        f.write("       "+va[v].location+"\n")
-                    else:
-                        m+=1
-            f.write("     </coordinates>\n")
-            f.write("  </LineString>\n")
-            f.write(" </Placemark>\n")
-            f.write("</Document>\n")
-            f.write("</kml>\n")
-
-        if m == len(vf):
-            print('Airport cannot be found')
+        # We reuse the map_flights function
+        if flight.map_flights(assig.flights, va, assig.aircraft.callsign + ".kml"):
+            return True
+        else:
             return False
-
     except AttributeError:
-        print("Wrong parameters. Provide an Airport object.")
+        print("[ERROR] (map_assignment) Wrong parameters. Provide an Assignment object and a list of airports.")
         return False

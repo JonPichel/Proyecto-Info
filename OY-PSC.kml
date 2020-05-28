@@ -1,0 +1,70 @@
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document>
+	<Placemark>
+		<name>Route EKBI - LTAI</name>
+		<Style>
+			<LineStyle>
+				<color>501400FF</color>
+				<width>8</width>
+			</LineStyle>
+		</Style>
+		<LineString>
+			<altitudeMode>clampToGround</altitudeMode>
+			<extrude>1</extrude>
+			<tesselate>1</tesselate>
+			<coordinates>
+				9.1443183000,55.7460428000
+				30.7948333333,36.9155000000
+			</coordinates>
+		</LineString>
+	</Placemark>
+	<Placemark>
+		<name>Route LTAI - EKBI</name>
+		<LineString>
+			<altitudeMode>clampToGround</altitudeMode>
+			<extrude>1</extrude>
+			<tesselate>1</tesselate>
+			<coordinates>
+				30.7948333333,36.9155000000
+				9.1443183000,55.7460428000
+			</coordinates>
+		</LineString>
+	</Placemark>
+	<Placemark>
+		<name>Route EKBI - LTBS</name>
+		<LineString>
+			<altitudeMode>clampToGround</altitudeMode>
+			<extrude>1</extrude>
+			<tesselate>1</tesselate>
+			<coordinates>
+				9.1443183000,55.7460428000
+				28.7950000000,36.7266666667
+			</coordinates>
+		</LineString>
+	</Placemark>
+	<Placemark>
+		<name>Route LTBS - EKBI</name>
+		<LineString>
+			<altitudeMode>clampToGround</altitudeMode>
+			<extrude>1</extrude>
+			<tesselate>1</tesselate>
+			<coordinates>
+				28.7950000000,36.7266666667
+				9.1443183000,55.7460428000
+			</coordinates>
+		</LineString>
+	</Placemark>
+	<Placemark>
+		<name>Route EKBI - EKAH</name>
+		<LineString>
+			<altitudeMode>clampToGround</altitudeMode>
+			<extrude>1</extrude>
+			<tesselate>1</tesselate>
+			<coordinates>
+				9.1443183000,55.7460428000
+				10.7919416667,56.2879527833
+			</coordinates>
+		</LineString>
+	</Placemark>
+</Document>
+</kml>

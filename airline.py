@@ -258,31 +258,49 @@ def write_day_plan(a, f):
         print(" [ERROR] (write_day_plan) You don't have permissions over that file.")
         return False
 
-def calculate_day_cost(a,vp):
-    """Function calculate_day_cost(a,vp):
+def calculate_day_costs(a, vp):
+    """Function calculate_day_costs(a,vp):
     ===================================================
     Calculates the total airport fees to be paid along the day
-    a: object of class airline (mainly assignments)
+    a: object of class airline
     vp: list of aiports
     Created by Raúl Criado on May 11th 2020
+    Fixed and tested by Jonathan Pichel on May 27th 2020
     """
     try:
-        assig = a.assignments
-        flights = assig.flights
-        m = 0
-        c = 0
-        for l in assig: 
-            for i in flights.arr:
-                for j in vp:
-                    if flights[i].arr == vp[j]:
-                        c += airport.calculate_fee(vp[j],(flights[i].time_dep - flights[i].time_arr))
-                    else:
-                        m += 1
-
-                if m == len(vp):
-                    print('airport could not be found')
-                    return (-1)
-            
+        assignments = a.assignments
+        total_cost = 0
+        for assig in assignments:
+            flights = flight.sort_flights(assig.flights)
+            assig_cost = 0
+            for i in range(1, len(flights) - 1):
+                code = flights[i - 1].arr
+                index = airport.search_airport_index(vp, code)
+                if index == -1:
+                    print(f" [ERROR] (calculate_day_costs) Airport {code} not found.")
+                    return -1
+                time = flights[i].time_dep - flights[i - 1].time_arr 
+                if time < 0:
+                    print(" [ERROR] (calculate_day_costs) There has been an error sorting the flights.")
+                    return -1
+                assig_cost += airport.calculate_fee(vp[index], time)
+            # The last plane of the day will pay till 5 AM of the next day
+            last = flights[-1]
+            if last.time_dep > last.time_arr:
+                # It crosses through midnight
+                time = 5 * 60 - last.time_arr
+            else:
+                # It doesn't cross through midnight
+                time = 24 * 60 - last.time_arr + 5 * 60
+            index = airport.search_airport_index(vp, last.arr)
+            if index == -1:
+                print(f" [ERROR] (calculate_day_costs) Airport {last.arr} not found.")
+                return -1
+            if time < 0:
+                print(" [ERROR] (calculate_day_costs) Error on the timing of the last flight.")
+            assig_cost += airport.calculate_fee(vp[index], time)
+            total_cost += assig_cost
+        return total_cost
     except AttributeError:
         print(" [ERROR] (calculate_day_costs) Wrong Parameters, please provide an Assignment or an Airport")
         return False
@@ -293,6 +311,7 @@ def read_airline(f):
     this function reads the content of the file f to initialize a new airline with the data found
     f: String, the name of the file
     Created by Pol Roca on May 18th 2020
+    Fixed and tested by Jonathan Pichel on May 25th
     """
     try:
         a = Airline()

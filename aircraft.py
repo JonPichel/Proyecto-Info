@@ -41,6 +41,7 @@ def read_aircrafts(f):
     Reads each line of a file containing a list of aircraft and creates a vector with the data found
     f: String, the name of the file
     Created by Pol Roca on May 14th 2020
+    Fixed and tested by Jonathan Pichel on May 25th 2020
     """
     # We iterate through all the lines of the file
     aircrafts = []

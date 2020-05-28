@@ -7,23 +7,37 @@ def prompt(*vargs):
     msg += ": "
     return input(msg)
 
-def success(*vargs):
+def success(*vargs, disrupt=True):
     msg = " [S]"
     for arg in vargs:
         msg += f" {arg}"
-    input(msg)
+    if disrupt:
+        input(msg)
+    else:
+        print(msg)
 
-def failure(*vargs):
+def failure(*vargs, disrupt=True):
     msg = " [F]"
     for arg in vargs:
         msg += f" {arg}"
-    input(msg)
+    if disrupt:
+        input(msg)
+    else:
+        print(msg)
 
 def verbose(*message):
     print(" [*]", *message)
 
 def wrong_option():
     input("Invalid option")
+
+def search_airline(name):
+    return [a for a in airlines if a.name == name]
+
+def show_airlines():
+    success("Available airlines:", disrupt=False)
+    for al in airlines:
+        print(f" - {al.name}")
 
 def show_help(screen):
     if screen == 'main':
@@ -48,13 +62,30 @@ def show_help(screen):
         print("(l) airline")
         print("(p) airports")
         print("(c) airports costs")
-        print("\nOther OPTIONS:")
+        print("\nOther options:")
         print("(h) show this help screen")
         print("(q) quit to main menu")
     elif screen == 'assign':
-        pass
+        print("Assign flights to the aircrafts:")
+        print("\t(1) choose an airline")
+        print("\nOther options:")
+        print("(l) show a list of the available airlines")
+        print("(h) show this help screen")
+        print("(q) return to main menu")
+    elif screen == 'costs':
+        print("Calculate operational costs of an airline:")
+        print("\t(1) choose an airline")
+        print("\nOther options:")
+        print("(h) show this help screen")
+        print("(q) return to main menu")
     elif screen == 'kml':
-        pass
+        print("KML options:")
+        print("(p) write kml of airports")
+        print("(f) write kml of flights")
+        print("(a) write kml of assignments")
+        print("\nOther options:")
+        print("(h) show this help screen")
+        print("(q) quit to main menu")
     elif screen == 'plot':
         pass
     elif screen == 'view':
@@ -83,7 +114,7 @@ def read_menu():
             al = airline.read_airline(filename)
             if al:
                 # If there is one of more airlines with the same name already stored
-                duplicates = [a for a in airlines if a.name == al.name]
+                duplicates = search_airline(al.name)
                 if duplicates:
                     # We delete them and append the new/actualized one
                     verbose("Removing previous instances of airline", al.name)
@@ -114,7 +145,6 @@ def read_menu():
             else:
                 failure("Couln't initialize any airport.")
         # Initialize airports costs
-        # TODO
         elif option == 'c':
             print("\n[Main -> Read Menu -> Airport Costs]")
             filename = prompt("Name of the file to read from")
@@ -140,36 +170,96 @@ def read_menu():
         else:
             wrong_option()
 
-def assign_flights():
+def assign_menu():
+    # Show help the first time
+    print()
+    show_help('assign')
+    # Assign loop
     while True:
-        name = input("Name of the airline (q to quit to main menu): ")
-        if name == 'q':
+        print("\n[Main -> Assign]")
+        name = prompt("Name of the airline")
+        if not name:
+            continue
+        if name == 'l':
+            if not airlines:
+                failure("No airlines in memory.")
+                continue
+            show_airlines()
+        elif name == 'h':
+            show_help('assign')
+        elif name == 'q':
             break
-        al = [a for a in airlines if a.name == name]
-        if al:
-            airlines.remove(al[0])
-            airlines.append(airline.assign_operations(al[0]))
-            input(f"Operations of {name} assigned.")
         else:
-            input(f"No airline found with name {name}.")
+            if not airlines:
+                failure("No airlines in memory.")
+                continue
+            al = search_airline(name)
+            if al:
+                airlines.remove(al[0])
+                airlines.append(airline.assign_operations(al[0]))
+                success(f"Operations of {name} assigned.")
+            else:
+                failure(f"No airline found with name {name}.")
+
+def costs_menu():
+    # Show help the first time
+    print()
+    show_help('costs')
+    # Costs loop
+    while True:
+        print("\n[Main -> Assign]")
+        name = prompt("Name of the airline")
+        if name == 'h':
+            show_help('costs')
+        elif name == 'q':
+            break
+        else:
+            al = search_airline(name)
+            if al:
+                print(airline.calculate_day_costs(al[0], airports))
+                
 
 def kml_menu():
-    print("(p) write kml of airports")
-    print("(f) write kml of flights")
-    print("(a) write kml of assignments")
-    print("(q) quit to main menu")
-
-    option = input("What do you want to save in kml?: ")
-    if option == 'p':
-        airport.map_airports(airports)
-    elif option == 'f':
-        name = input("Name of the airline to map flights: ")
-        al, = (al for al in airlines if al.name == name)
-        flight.map_flights(al.operations, airports)
-    elif option == 'a':
-        pass
-    elif option == 'q':
-        pass
+    print()
+    show_help('kml')
+    while True:
+        option = prompt("What do you want to save in kml?")
+        if option == 'p':
+            if airport.map_airports(airports):
+                success(f"Map of the airports written to Airports.kml")
+            else:
+                failure(f"Couldn't map the airports.")
+        elif option == 'f':
+            print("\n[Main -> KML Menu]")
+            name = prompt("Name of the airline to map flights")
+            if name:
+                al = search_airline(name)
+                if flight.map_flights(al[0].operations, airports):
+                    success(f"Map of the flights on {name} written to Operations.kml")
+                else:
+                    failure(f"Couldn't map the flights on {name}.")
+        elif option == 'a':
+            name = prompt("Airline name")
+            if name:
+                al = search_airline(name)
+                if al:
+                    callsign = prompt("Aircraft's callsign") 
+                    assig = [assig for assig in al[0].assignments if assig.aircraft.callsign == callsign]
+                    if assig:
+                        if assignment.map_assignment(assig[0], airports):
+                            success(f"Map of the flights for {callsign} written to {callsign}.kml")
+                        else:
+                            failure(f"Couldn't map the flights assigned to {callsign}.")
+                    else:
+                        failure(f"No aircraft {callsign} for {name}.")
+                else:
+                    failure(f"No airline named {name}.")
+        elif option == 'h':
+            show_help('kml')
+        elif option == 'q':
+            break
+        else:
+            wrong_option()
     
 def plot_menu():
     print("Plot menu options:\n")
@@ -276,9 +366,6 @@ def view_menu():
                         flight.show_flight(fl)
                     print()
                 print()
-                
-
-
         elif option == 'q':
             break
 
@@ -310,8 +397,8 @@ def write_menu():
 # Every option of main menu is mapped to a function
 OPTIONS = {
     'i': read_menu,
-    'a': assign_flights,
-    'c': None,
+    'a': assign_menu,
+    'c': costs_menu,
     'd': None,
     's': None,
     'k': kml_menu,
