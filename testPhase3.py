@@ -12,6 +12,8 @@ import airline, airport
 #uploading the data from files
 primera = airline.read_airline("PrimeraAir.txt")
 costs = airport.read_airports("AP.txt")
+# faltaba leer los costes
+airport.read_airport_costs(costs, "APC.txt")
 
 #do calculations
 primera = airline.assign_operations(primera)
