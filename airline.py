@@ -19,10 +19,10 @@ class Airline:
         self.assignments = []
 
 def show_airline(a):
-    """ Function show_airline (f)
+    """ Function show_airline (a: Airline)
     ==================================================
     Prints on the screen the information of an airline
-    a: Airline, the flight data will be printed
+    a: Airline, the airline whose data will be printed
     Created by Jonathan Pichel on April 21th 2020
     Tested by Pol Roca on April 22th 2020
     """
@@ -36,19 +36,40 @@ def show_airline(a):
         return
     print("Airline information:")
     print("Name:", name)
-    print("It has a fleet of", len(aircrafts), "Aircraft:")
-    for a in aircrafts:
-        # The end='' tells prevents the print function to insert a newline
-        print('\t', end='')
-        aircraft.show_aircraft(a)
-    print("Operations today are", str(len(operations)) + ":")
-    for f in operations:
-        # The end='' tells prevents the print function to insert a newline
-        print('\t', end='')
-        flight.show_flight(f)
-    for assig in assignments:
-        # The end='' tells prevents the print function to insert a newline
-        assignment.show_assignment(assig)
+    if aircrafts:
+        print("It has a fleet of", len(aircrafts), "Aircraft:")
+        for ac in aircrafts:
+            # The end='' tells prevents the print function to insert a newline
+            print('\t', end='')
+            aircraft.show_aircraft(ac)
+    else:
+        print("No aircrafts for this airline.")
+    if operations:
+        print("Operations today are", str(len(operations)) + ":")
+        for f in operations:
+            # The end='' tells prevents the print function to insert a newline
+            print('\t', end='')
+            flight.show_flight(f)
+    else:
+        print("No operations for this airline.")
+    if assignments:
+        for assig in assignments:
+            # The end='' tells prevents the print function to insert a newline
+            assignment.show_assignment(assig)
+        unassigned = get_unassigned(a)
+        if unassigned:
+            print(f"{len(unassigned)} flights not assigned:")
+            for fl in unassigned:
+                print('\t', end='')
+                flight.show_flight(fl)
+        else:
+            print("No unassigned flights.")
+    else:
+        print("No assignments for this airline.")
+    if hasattr(a, "costs"):
+        print(f"Total operational costs of the day: {a.costs}")
+    else:
+        print("No costs calculated for this airline.")
 
 def add_aircraft(a, ac):
     """ Function add_aircraft (a: Airline(), ac: Aircraft()): Boolean
@@ -239,13 +260,7 @@ def write_day_plan(a, f):
         for assig in a.assignments:
             output.write(assignment.write_assignment(assig))
         # Show also the unassigned flights
-        unassigned = []
-        for fl in a.operations:
-            for assig in a.assignments:
-                if fl in assig.flights:
-                    break
-            else:
-                unassigned.append(fl)
+        unassigned = get_unassigned(a)
         if unassigned:
             output.write(f"{len(unassigned)} flights not assigned:\n")
             for fl in unassigned:
@@ -298,12 +313,13 @@ def calculate_day_costs(a, vp):
                 return -1
             if time < 0:
                 print(" [ERROR] (calculate_day_costs) Error on the timing of the last flight.")
+                return -1
             assig_cost += airport.calculate_fee(vp[index], time)
             total_cost += assig_cost
         return total_cost
     except AttributeError:
         print(" [ERROR] (calculate_day_costs) Wrong Parameters, please provide an Assignment or an Airport")
-        return False
+        return -1
 
 def read_airline(f):
     """ Function read_airline (f: String):
@@ -334,3 +350,13 @@ def read_airline(f):
     except PermissionError:
         print(" [ERROR] (read_airline) You don't have permissions over that file.")
         return
+
+def get_unassigned(a):
+    unassigned = []
+    for fl in a.operations:
+        for assig in a.assignments:
+            if fl in assig.flights:
+                break
+        else:
+            unassigned.append(fl)
+    return unassigned
