@@ -60,3 +60,12 @@ Raúl Criado, Adrià Vaquer, Jonathan Pichel, Pol Roca.
         	- Pol: read_airline(f), read_aircrafts(f) y read_airport_costs(v, f)
         	- Raúl: calculate_day_costs(a, vp), set_ap_info(ap, s1, s2, s3), set_costs(ap, c1, c2, c3)
 	- 16:24 --> Se cierra la sesión
+
+* Sesión 7 - 15/05/2020 - Mediante Discord - Todos los miembros presentes
+	- 18:54 --> Se inicia la reunión
+	- 19:06 --> Se reparten las funciones de la Phase 4 y los test y programas restantes
+		- Jonathan: Menu
+		- Adrià: Test Phase 4
+		- Pol: Test Phase 3
+		- Raúl: map_airports (v), map_flights (vf, va), map_assignment (assig, va)
+	- 19:11 --> Se cierra la sesión
