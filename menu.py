@@ -76,6 +76,7 @@ def show_airlines():
     for al in airlines:
         print(f" - {al.name}")
 
+# DONE
 def show_help(screen):
     """ Function show_help(screen: string):
     screen: string, name of the menu
@@ -120,6 +121,15 @@ def show_help(screen):
         print("(l) show a list of the available airlines")
         print("(h) show this help screen")
         print("(q) return to main menu")
+    elif screen == 'delay':
+        print("Delay a flight:")
+        print("\t(1) Choose the flight")
+        print("\t(2) Choose a delay")
+        print("\nPrompt options:")
+        print("(y) delay a flight")
+        print("(n) return to main menu")
+        print("(h) show this help screen")
+        print("(q) return to main menu")
     elif screen == 'kml':
         print("KML options:")
         print("(p) write kml of airports")
@@ -145,6 +155,21 @@ def show_help(screen):
         print("\nOther OPTIONS:")
         print("(h) show this help screen")
         print("(q) return to main menu")
+    elif screen == 'flights':
+        print("Search options:")
+        print("(airline) airline name")
+        print("(dep) departure airport")
+        print("(arr) arrival airport")
+        print("(tdep) departure time")
+        print("(tarr) arrival time")
+        print("\nOther options")
+        print("(h) show this help screen")
+        print("(s) show current results")
+        print("(c) show current set params.")
+        print("(q) return to previous screen")
+        print("\nTIPS:")
+        print(" - If you want to unset a parameter, choose that search option and leave it blank")
+        print(" - If you are choosing a flight to delay, press q when the candidates correspond to the flight you want")
 
 # DONE
 def read_menu():
@@ -287,7 +312,7 @@ def costs_menu():
                     costs = airline.calculate_day_costs(al[0], airports)
                     if costs != -1:
                         if costs == 0:
-                            verbose("Total cost of 0. You may not have initialized airport costs.")
+                            verbose("Total cost of 0. You may have not initialized airport costs.")
                         al[0].costs = costs
                         success(f"Day costs for {name} calculated.")
                     else:
@@ -297,13 +322,42 @@ def costs_menu():
             else:
                 failure(f"No airline found with name {name}.")
                 
+# DONE
 def delay_menu():
     """ Function delay_menu():
     Menu for delaying flights
     Created by Jonathan Pichel on May 22th 2020
     """
-    pass
+    # Show help the first time
+    print()
+    show_help('delay')
+    # Delay loop
+    while True:
+        print("\n[Main -> Delay]")
+        option = prompt("Do you want to delay a flight?")
+        if option == 'y':
+            results = search_flights('delay')
+            if not results:
+                failure("No results.")
+                continue
+            elif len(results) == 1:
+                target = results[0]
+            else:
+                failure("More than one result.")
+                continue
+            print("\n[Main -> Delay]")
+            try:
+                delay = int(prompt("Delay time (in minutes)"))
+            except ValueError:
+                failure("Enter a number.")
+            if flight.delay_flight(target, delay):
+                success("Flight successfully delayed.")
+            else:
+                failure("Couldn't delay the flight.")
+        if option == 'n' or option == 'q':
+            break
 
+# DONE
 def show_menu():
     """ Function show_menu():
     Menu that provides information viewing functionalities
@@ -318,75 +372,119 @@ def show_menu():
         option = prompt("What information do you want to display?")
         if option == 'l':
             if airlines:
-                for al in airlines:
-                    airline.show_airline(al)
-                    if input('--more-- (q to break)') == 'q':
-                        break
+                name = prompt("Airline's name (\"all\" to show them all)")
+                if name == 'all':
+                    for al in airlines:
+                        airline.show_airline(al)
+                        if input('--more-- (q to break)') == 'q':
+                            break
+                else:
+                    al = search_airline(name)
+                    if al:
+                        airline.show_airline(al[0])
+                    else:
+                        failure(f"No airline named {name}.")
             else:
-                print("No airlines in memory.\n")
+                failure("No airlines in memory.")
         elif option == 'p':
             if airports:
-                for ap in airports:
-                    airport.show_airport(ap)
-                    if input('--more-- (q to break)') == 'q':
-                        break
+                code = prompt('ICAO code ("all" to show them all)')
+                if code == 'all':
+                    for ap in airports:
+                        airport.show_airport(ap)
+                        if input('--more-- (q to break)') == 'q':
+                            break
+                else:
+                    al = search_airline(name)
+                    if al:
+                        airline.show_airline(al[0])
+                    else:
+                        failure(f"No airline named {name}.")
             else:
-                print("No airports in memory.\n")
+                failure("No airports in memory.")
         elif option == 'f':
-            while True:
-                print("Searching options (you can combine them):\n")
-                print("(l) provide airline name")
-                print("(p) provide departure and/or arrival airports")
-                print("(t) provide departure and/or arrival times")
-                print("(q) return to view menu")
-                option = input("Choose parameter to search from: ")
-                if 'q' in option:
-                    break
-                if 'l' in option:
-                    al = input("Airline name: ")
-                else:
-                    al = ""
-                if 'p' in option:
-                    dep = input("Departure airport: ")
-                    arr = input("Arrival airport: ")
-                else:
-                    dep = ""
-                    arr = ""
-                if 't' in option:
-                    time_dep = input("Departure time: ")
-                    time_arr = input("Arrival time: ")
-                else:
-                    time_dep = ""
-                    time_arr = ""
-                if al:
-                    results = {fl: line.name for line in airlines for fl in line.operations if line.name == al}
-                    if not results:
-                        print("No airline stored with the name", al)
-                        continue
-                else:
-                    results = {fl: line.name for line in airlines for fl in line.operations}
-                if dep:
-                    results = {fl: results[fl] for fl in results if fl.dep == dep}
-                if arr:
-                    results = {fl: results[fl] for fl in results if fl.arr == arr}
-                if time_dep:
-                    results = {fl: results[fl] for fl in results if fl.time_dep == time_dep}
-                if time_arr:
-                    results = {fl: results[fl] for fl in results if fl.time_arr == time_arr}
-                print(len(results), "results found.")
-                lines = {name: [fl for fl in results if results[fl] == name] for name in set(results.values())}
-                for line in lines:
-                    if input(f"From {line} (enter to show, q to break):") == 'q':
-                        break
-                    for fl in lines[line]:
-                        flight.show_flight(fl)
-                    print()
-                print()
+            search_flights('show')
         elif option == 'q':
             break
         else:
             wrong_option()
 
+# DONE
+def search_flights(mode):
+    if mode == 'show':
+        text = '\n[Main -> Show -> Flight]'
+    elif mode == 'delay':
+        text = '\n[Main -> Delay -> Search]'
+    params = {'airline': None, 'dep': None, 'arr': None, 'tdep': None, 'tarr': None}
+    all_flights = {fl: al.name for al in airlines for fl in al.operations}
+    results = all_flights.copy()
+    # Show help the first time
+    print()
+    show_help('flights')
+    # Searching loop
+    while True:
+        print(text)
+        param = prompt("Search parameter ('s' to show current results)")
+        if param == 'airline':
+            al = prompt("Airline name")
+            if al:
+                params['airline'] = al
+            else:
+                params['airline'] = None
+        elif param == 'dep':
+            dep = prompt("Departure airport")
+            if dep:
+                params['dep'] = dep
+            else:
+                params['dep'] = None
+        elif param == 'arr':
+            arr = prompt("Arrival airport")
+            if arr:
+                params['arr'] = arr
+            else:
+                params['arr'] = None
+        elif param == 'tdep':
+            tdep = prompt("Time of departure (HHMM format)")
+            if tdep:
+                params['tdep'] = tdep
+            else:
+                params['tdep'] = None
+        elif param == 'tarr':
+            tarr = prompt("Time of arrival (HHMM format)")
+            if tarr:
+                params['tarr'] = tarr
+            else:
+                params['tarr'] = None
+        elif param == 's':
+            success(f"{len(results)} candidates")
+            alines = {name: [fl for fl in results if results[fl] == name] for name in set(results.values())}
+            for al in alines:
+                if input(f" {len(alines[al])} from {al} (enter to show, q to break):") == 'q':
+                    break
+                for fl in alines[al]:
+                    print("\t", end='')
+                    flight.show_flight(fl)
+        elif param == 'c':
+            for p in params:
+                print(f"{p} -> {params[p]}")
+        elif param == 'h':
+            show_help('flights')
+        elif param == 'q':
+            candidate = [fl for fl in results]
+            return candidate
+        results = all_flights.copy()
+        if params['airline']:
+            results = {fl: results[fl] for fl in results if results[fl] == params['airline']}
+        if params['dep']:
+            results = {fl: results[fl] for fl in results if fl.dep == params['dep']}
+        if params['arr']:
+            results = {fl: results[fl] for fl in results if fl.arr == params['arr']}
+        if params['tdep']:
+            results = {fl: results[fl] for fl in results if fl.time_dep == flight.convert_time(params['tdep'])}
+        if params['tarr']:
+            results = {fl: results[fl] for fl in results if fl.time_arr == flight.convert_time(params['tarr'])}
+
+# TODO
 def kml_menu():
     """ Function kml_menu():
     Menu that provides kml saving functionalities
@@ -397,7 +495,7 @@ def kml_menu():
     show_help('kml')
     # KML loop
     while True:
-        print("[Main -> KML]")
+        print("\n[Main -> KML]")
         option = prompt("What do you want to save in kml?")
         if option == 'p':
             if airport.map_airports(airports):
@@ -435,7 +533,8 @@ def kml_menu():
             break
         else:
             wrong_option()
-    
+
+# TODO
 def plot_menu():
     """ Function plot_menu():
     Menu that provides plotting functionalities
@@ -470,7 +569,7 @@ def plot_menu():
     elif option == 'q':
         pass
 
-
+# TODO
 def write_menu():
     """ Function write_menu():
     Menu that provides writing functionalities
