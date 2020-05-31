@@ -94,7 +94,6 @@ def show_help(screen):
         print("(s) show airline information in the screen and the cost of the day operations") 
         print("(k) write KML files of airports, flights and assignments")
         print("(p) plot the flights and the assignments of the airline")
-        print("(v) view information about some object")
         print("(w) write current airline assignment into a file\n")
         print("\t--end option--")
         print("(e) end program")
@@ -139,7 +138,13 @@ def show_help(screen):
         print("(h) show this help screen")
         print("(q) quit to main menu")
     elif screen == 'plot':
-        pass
+        print("Plot menu options:")
+        print("(a) plot all of the assignments of an airline")
+        print("(s) plot a single assignment (by aircraft's callsign)")
+        print("(f) plot airline operations")
+        print("\nOther options:")
+        print("(h) show this help screen")
+        print("(q) quit to main menu")
     elif screen == 'show':
         print("Viewing options:")
         print("(l) airlines")
@@ -154,6 +159,7 @@ def show_help(screen):
         print("\t(2) choose filename")
         print("\nOther OPTIONS:")
         print("(h) show this help screen")
+        print("(l) show available airlines")
         print("(q) return to main menu")
     elif screen == 'flights':
         print("Search options:")
@@ -255,35 +261,38 @@ def assign_menu():
     Menu that provides assigning functionalities
     Created by Jonathan Pichel on May 22th 2020
     """
-    # Show help the first time
-    print()
-    show_help('assign')
-    # Assign loop
-    while True:
-        print("\n[Main -> Assign]")
-        name = prompt("Airline's name")
-        if not name:
-            continue
-        if name == 'l':
-            if not airlines:
-                failure("No airlines in memory.")
+    if airlines:
+        # Show help the first time
+        print()
+        show_help('assign')
+        # Assign loop
+        while True:
+            print("\n[Main -> Assign]")
+            name = prompt("Airline's name")
+            if not name:
                 continue
-            show_airlines()
-        elif name == 'h':
-            show_help('assign')
-        elif name == 'q':
-            break
-        else:
-            if not airlines:
-                failure("No airlines in memory.")
-                continue
-            al = search_airline(name)
-            if al:
-                airlines.remove(al[0])
-                airlines.append(airline.assign_operations(al[0]))
-                success(f"Operations of {name} assigned.")
+            if name == 'l':
+                if not airlines:
+                    failure("No airlines in memory.")
+                    continue
+                show_airlines()
+            elif name == 'h':
+                show_help('assign')
+            elif name == 'q':
+                break
             else:
-                failure(f"No airline found with name {name}.")
+                if not airlines:
+                    failure("No airlines in memory.")
+                    continue
+                al = search_airline(name)
+                if al:
+                    airlines.remove(al[0])
+                    airlines.append(airline.assign_operations(al[0]))
+                    success(f"Operations of {name} assigned.")
+                else:
+                    failure(f"No airline found with name {name}.")
+    else:
+        failure("No airlines in memory.")
 
 # DONE
 def costs_menu():
@@ -291,36 +300,39 @@ def costs_menu():
     Menu for calculating costs
     Created by Jonathan Pichel on May 22th 2020
     """
-    # Show help the first time
-    print()
-    show_help('costs')
-    # Costs loop
-    while True:
-        print("\n[Main -> Assign]")
-        name = prompt("Name of the airline")
-        if name == 'l':
-            show_airlines()
-        elif name == 'h':
-            show_help('costs')
-        elif name == 'q':
-            break
-        else:
-            al = search_airline(name)
-            if al:
-                if al[0].assignments:
-                    # We save the costs inside the object
-                    costs = airline.calculate_day_costs(al[0], airports)
-                    if costs != -1:
-                        if costs == 0:
-                            verbose("Total cost of 0. You may have not initialized airport costs.")
-                        al[0].costs = costs
-                        success(f"Day costs for {name} calculated.")
-                    else:
-                        failure("An error has occurred. Make sure you initialize airports and airports' costs before trying this.")
-                else:
-                    failure(f"You have to assign the operations in {name} first!")
+    if airlines:
+        # Show help the first time
+        print()
+        show_help('costs')
+        # Costs loop
+        while True:
+            print("\n[Main -> Assign]")
+            name = prompt("Name of the airline")
+            if name == 'l':
+                show_airlines()
+            elif name == 'h':
+                show_help('costs')
+            elif name == 'q':
+                break
             else:
-                failure(f"No airline found with name {name}.")
+                al = search_airline(name)
+                if al:
+                    if al[0].assignments:
+                        # We save the costs inside the object
+                        costs = airline.calculate_day_costs(al[0], airports)
+                        if costs != -1:
+                            if costs == 0:
+                                verbose("Total cost of 0. You may have not initialized airport costs.")
+                            al[0].costs = costs
+                            success(f"Day costs for {name} calculated.")
+                        else:
+                            failure("An error has occurred. Make sure you initialize airports and airports' costs before trying this.")
+                    else:
+                        failure(f"You have to assign the operations in {name} first!")
+                else:
+                    failure(f"No airline found with name {name}.")
+    else:
+        failure("No airlines in memory.")
                 
 # DONE
 def delay_menu():
@@ -328,34 +340,37 @@ def delay_menu():
     Menu for delaying flights
     Created by Jonathan Pichel on May 22th 2020
     """
-    # Show help the first time
-    print()
-    show_help('delay')
-    # Delay loop
-    while True:
-        print("\n[Main -> Delay]")
-        option = prompt("Do you want to delay a flight?")
-        if option == 'y':
-            results = search_flights('delay')
-            if not results:
-                failure("No results.")
-                continue
-            elif len(results) == 1:
-                target = results[0]
-            else:
-                failure("More than one result.")
-                continue
+    if airlines:
+        # Show help the first time
+        print()
+        show_help('delay')
+        # Delay loop
+        while True:
             print("\n[Main -> Delay]")
-            try:
-                delay = int(prompt("Delay time (in minutes)"))
-            except ValueError:
-                failure("Enter a number.")
-            if flight.delay_flight(target, delay):
-                success("Flight successfully delayed.")
-            else:
-                failure("Couldn't delay the flight.")
-        if option == 'n' or option == 'q':
-            break
+            option = prompt("Do you want to delay a flight?")
+            if option == 'y':
+                results = search_flights('delay')
+                if not results:
+                    failure("No results.")
+                    continue
+                elif len(results) == 1:
+                    target = results[0]
+                else:
+                    failure("More than one result.")
+                    continue
+                print("\n[Main -> Delay]")
+                try:
+                    delay = int(prompt("Delay time (in minutes)"))
+                except ValueError:
+                    failure("Enter a number.")
+                if flight.delay_flight(target, delay):
+                    success("Flight successfully delayed.")
+                else:
+                    failure("Couldn't delay the flight.")
+            if option == 'n' or option == 'q':
+                break
+    else:
+        failure("No airlines in memory.")
 
 # DONE
 def show_menu():
@@ -372,6 +387,10 @@ def show_menu():
         option = prompt("What information do you want to display?")
         if option == 'l':
             if airlines:
+                print("Airlines in memory:")
+                for al in airlines:
+                    print(f" - {al.name}")
+                print("\n[Main -> Show -> Airlines]")
                 name = prompt("Airline's name (\"all\" to show them all)")
                 if name == 'all':
                     for al in airlines:
@@ -388,6 +407,10 @@ def show_menu():
                 failure("No airlines in memory.")
         elif option == 'p':
             if airports:
+                print("Airports in memory:")
+                for ap in airports:
+                    print(f" - {ap.code}")
+                print("\n[Main -> Show -> Airlines]")
                 code = prompt('ICAO code ("all" to show them all)')
                 if code == 'all':
                     for ap in airports:
@@ -395,15 +418,20 @@ def show_menu():
                         if input('--more-- (q to break)') == 'q':
                             break
                 else:
-                    al = search_airline(name)
-                    if al:
-                        airline.show_airline(al[0])
+                    ap = airport.search_airport_index(airports, code)
+                    if ap != -1:
+                        airport.show_airport(airports[ap])
                     else:
-                        failure(f"No airline named {name}.")
+                        failure(f"No airport with code {code}.")
             else:
                 failure("No airports in memory.")
         elif option == 'f':
-            search_flights('show')
+            if airlines:
+                search_flights('show')
+            else:
+                failure("No airlines in memory.")
+        elif option == 'h':
+            show_help('show')
         elif option == 'q':
             break
         else:
@@ -426,6 +454,9 @@ def search_flights(mode):
         print(text)
         param = prompt("Search parameter ('s' to show current results)")
         if param == 'airline':
+            print("Airlines in memory:")
+            for al in airlines:
+                print(f" - {al.name}")
             al = prompt("Airline name")
             if al:
                 params['airline'] = al
@@ -484,7 +515,6 @@ def search_flights(mode):
         if params['tarr']:
             results = {fl: results[fl] for fl in results if fl.time_arr == flight.convert_time(params['tarr'])}
 
-# TODO
 def kml_menu():
     """ Function kml_menu():
     Menu that provides kml saving functionalities
@@ -498,35 +528,51 @@ def kml_menu():
         print("\n[Main -> KML]")
         option = prompt("What do you want to save in kml?")
         if option == 'p':
-            if airport.map_airports(airports):
-                success(f"Map of the airports written to Airports.kml")
+            if airports:
+                if airport.map_airports(airports):
+                    success(f"Map of the airports written to Airports.kml")
+                else:
+                    failure(f"Couldn't map the airports.")
             else:
-                failure(f"Couldn't map the airports.")
+                failure(f"No airports in memory.")
         elif option == 'f':
-            print("\n[Main -> KML Menu]")
-            name = prompt("Name of the airline to map flights")
-            if name:
-                al = search_airline(name)
-                if flight.map_flights(al[0].operations, airports):
-                    success(f"Map of the flights on {name} written to Operations.kml")
-                else:
-                    failure(f"Couldn't map the flights on {name}.")
-        elif option == 'a':
-            name = prompt("Airline name")
-            if name:
-                al = search_airline(name)
-                if al:
-                    callsign = prompt("Aircraft's callsign") 
-                    assig = [assig for assig in al[0].assignments if assig.aircraft.callsign == callsign]
-                    if assig:
-                        if assignment.map_assignment(assig[0], airports):
-                            success(f"Map of the flights for {callsign} written to {callsign}.kml")
-                        else:
-                            failure(f"Couldn't map the flights assigned to {callsign}.")
+            if airlines:
+                print("Available airlines:")
+                for al in airlines:
+                    print(f" - {al.name}")
+                print("\n[Main -> KML Menu -> Flights]")
+                name = prompt("Name of the airline to map flights")
+                if name:
+                    al = search_airline(name)
+                    if flight.map_flights(al[0].operations, airports):
+                        success(f"Map of the flights on {name} written to Operations.kml")
                     else:
-                        failure(f"No aircraft {callsign} for {name}.")
-                else:
-                    failure(f"No airline named {name}.")
+                        failure(f"Couldn't map the flights on {name}.")
+            else:
+                failure("No airlines in memory.")
+        elif option == 'a':
+            if airlines:
+                print("Available airlines:")
+                for al in airlines:
+                    print(f" - {al.name}")
+                print("\n[Main -> KML Menu -> Assignments")
+                name = prompt("Airline name")
+                if name:
+                    al = search_airline(name)
+                    if al:
+                        callsign = prompt("Aircraft's callsign") 
+                        assig = [assig for assig in al[0].assignments if assig.aircraft.callsign == callsign]
+                        if assig:
+                            if assignment.map_assignment(assig[0], airports):
+                                success(f"Map of the flights for {callsign} written to {callsign}.kml")
+                            else:
+                                failure(f"Couldn't map the flights assigned to {callsign}.")
+                        else:
+                            failure(f"No aircraft {callsign} for {name}.")
+                    else:
+                        failure(f"No airline named {name}.")
+            else:
+                failure("No airlines in memory.")
         elif option == 'h':
             show_help('kml')
         elif option == 'q':
@@ -534,70 +580,105 @@ def kml_menu():
         else:
             wrong_option()
 
-# TODO
 def plot_menu():
     """ Function plot_menu():
     Menu that provides plotting functionalities
     Created by Jonathan Pichel on May 22th 2020
     """
-    print("Plot menu options:\n")
-    print("(a) plot all of the assignments of an airline")
-    print("(s) plot a single assignment (by aircraft's callsign)")
-    print("(f) plot airline operations")
-    print("(q) quit to main menu")
+    if airlines:
+        # Show help the first time
+        print()
+        show_help('plot')
+        # Plot loop
+        while True:
+            option = prompt("What do you want to plot?: ")
+            if option == 'a':
+                name = prompt("Airline's name")
+                al = search_airline(name)
+                if al:
+                    if al[0].assignments:
+                        success(f"Plotting flights for {al[0].name}...")
+                        airline.plot_assignments(al[0], title=f"Assignments of {al[0].name}")
+                    else:
+                        failure(f"No assignments in {name}!")
+                else:
+                    failure("No airline found with name", name)
+            elif option == 's':
+                name = prompt("Name of the airline: ")
+                al = search_airline(name)
+                if al:
+                    if al[0].assignments:
+                        callsign = prompt("Aircraft's callsign: ")
+                        assig = [a for a in al[0].assignments if a.aircraft.callsign == callsign]
+                        if assig:
+                            success(f"Plotting flights for {callsign}...")
+                            flight.plot_flights(assig[0], title=f'Flights for {callsign}')
+                        else:
+                            failure(f"No aircraft named {callsign} in {name}.")
+                    else:
+                        failure(f"No assignments in {name}!")
+                else:
+                    failure("No airline found with name", name)
+            elif option == 'f':
+                name = prompt("Airline's name")
+                al = search_airline(name)
+                if al:
+                    if al[0].operations:
+                        success(f"Plotting flights for {al[0].name}...")
+                        airline.plot_flights(al[0], title=f"Flights of {al[0].name}")
+                    else:
+                        failure(f"Airline {name} has no flights planned.")
+                else:
+                    failure("No airline found with name", name)
+            elif option == 'h':
+                show_help('plot')
+            elif option == 'q':
+                break
+            else:
+                wrong_option()
+    else:
+        failure("No airlines in memory.")
 
-    option = input("What do you want to plot?: ")
-    if option == 'a':
-        name = input("Name of the airline: ")
-        al = [a for a in airlines if a.name == name]
-        if al:
-            input(f"Plotting flights for {al[0].name}...")
-            airline.plot_assignments(al[0], title=f"Assignments of {al[0].name}")
-        else:
-            input("No airline found with name", name)
-    elif option == 's':
-        name = input("Name of the airline: ")
-        callsign = input("Aircraft's callsign: ")
-    elif option == 'f':
-        name = input("Name of the airline: ")
-        al = [a for a in airlines if a.name == name]
-        if al:
-            input(f"Plotting flights for {al[0].name}...")
-            airline.plot_flights(al[0], title=f"Flights of {al[0].name}")
-        else:
-            input("No airline found with name", name)
-    elif option == 'q':
-        pass
-
-# TODO
 def write_menu():
     """ Function write_menu():
     Menu that provides writing functionalities
     Created by Jonathan Pichel on May 22th 2020
     """
-    # Show help the first time
-    show_help('write')
-    # Write menu loop
-    while True:
-        # Ask for airline's name
-        name = input("Name of the airline: ")
-        # Show help screen
-        if name == 'h':
-            show_help('write')
-        # Break to main loop
-        elif name == 'q':
-            break
-        else:
-            # This list will return the results
-            al = [al for al in airlines if al.name == name]
-            if al:
-                filename = input("File to write to: ")
-                if airline.write_day_plan(al[0], filename):
-                    input(f"Day plan for {name} saved to {filename}")
-                else:
-                    input(f"An error has occurred.")
+    if airlines:
+        # Show help the first time
+        print()
+        show_help('write')
+        # Write menu loop
+        while True:
+            # Ask for airline's name
+            print("\n[Main -> Write]")
+            name = prompt("Airline's name")
+            # Show help screen
+            if name == 'h':
+                show_help('write')
+            elif name == 'l':
+                success("Available airlines:")
+                for al in airlines:
+                    print(f" - {al.name}")
+
+            # Break to main loop
+            elif name == 'q':
+                break
             else:
-                input(f"No airline named {name}.")
+                al = search_airline(name)
+                if al:
+                    if al[0].assignments:
+                        filename = prompt("Filename")
+                        if airline.write_day_plan(al[0], filename):
+                            success(f"Day plan for {name} saved to {filename}.")
+                        else:
+                            failure("An error has occurred.")
+                    else:
+                        failure(f"No assignments for {name}.")
+                else:
+                    failure(f"No airline named {name}.")
+    else:
+        failure("No airlines in memory.")
 
 # Every option of main menu is mapped to a function
 OPTIONS = {
