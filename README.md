@@ -18,7 +18,6 @@ Raúl Criado, Adrià Vaquer, Jonathan Pichel, Pol Roca.
 	- 18:52 --> Se termina de asignar las tareas/funciones individuales
 	- 18:53 --> Se cierra la sesión
 
-
  * Sesión 2 - 22/04/2020 - Mediante Discord - Todos los miembros presentes
 	- 19:08 --> Se inicia la reunión
 	- 19:10 --> Se realizan los test de las funciones
@@ -29,19 +28,17 @@ Raúl Criado, Adrià Vaquer, Jonathan Pichel, Pol Roca.
 	- 20:12 --> Se finalizan los test anteriores
 	- 20:14 --> Se cierra la sesión
 
-
  * Sesión 3 - 30/04/2020 - Mediante Discord - Todos los miembros presentes
 	- 11:05 --> Se inicia la reunión
 	- 11:30 --> Se crea classAssignment
 	- 11:40 --> Se finalize classAssignment
-	- 11:41 --> Se reparten las funciones de la Phase 2 (resultan 3 para cada miembro del grupo
+	- 11:41 --> Se reparten las funciones de la Phase 2 (resultan 3 para cada miembro del grupo)
 		- Raúl: plot_assignments(a), insert_delay(a, depAp, depTm, d) y check_operations(a)
 		- Jonathan: plot_assignment(assig), plot_flights(vf) y assign_flight(assig, f)
 		- Adrià: assign_aircraft(assig, ac), plot_assignments(vector_assig) y plot_flights(a)
 		- Pol: assign_operations(a), show_assignment(assig) y plot_flight(f)
 	- 11:59 --> Se termina de asignar las tareas/funciones individuales
 	- 12:01 --> Se cierra la sesión
-
 
  * Sesión 4 - 08/05/2020 - Mediante Discord - Todos los miembros presentes
 	- 18:16 --> Se inicia la reunión 
@@ -50,8 +47,25 @@ Raúl Criado, Adrià Vaquer, Jonathan Pichel, Pol Roca.
 	- 19:48 --> Se arreglan/corrigen algunas funciones
 	- 19:50 --> Se cierra la sesión
 
-
  * Sesión 5 - 09/05/2020 - Mediante Discord - Todos los miembros presentes
 	- 18:23 --> Se inicia la reunión
 	- 18:31 --> Se revisan funciones y se arreglan errores a partir de la realización de tests
 	- 19:12 --> Se cierra la sesión
+
+ * Sesión 6 - 11/05/2020 - Mediante Discord - Todos los miembros presentes
+	- 16:10 --> Se inicia la reunión
+	- 16:14 --> Se reparten las funciones de la Phase 3 (resultan 3 para cada miembro del grupo)
+       		- Jonathan: convert_time(hhmm), write_day_plan(a, f) y read_airports(f)
+        	- Adrià: search_airport_index(v, s), read_flights(f) y calculate_fee(ap, t)
+        	- Pol: read_airline(f), read_aircrafts(f) y read_airport_costs(v, f)
+        	- Raúl: calculate_day_costs(a, vp), set_ap_info(ap, s1, s2, s3), set_costs(ap, c1, c2, c3)
+	- 16:24 --> Se cierra la sesión
+
+* Sesión 7 - 15/05/2020 - Mediante Discord - Todos los miembros presentes
+	- 18:54 --> Se inicia la reunión
+	- 19:06 --> Se reparten las funciones de la Phase 4 y los test y programas restantes
+		- Jonathan: Menu
+		- Adrià: Test Phase 4
+		- Pol: Test Phase 3
+		- Raúl: map_airports (v), map_flights (vf, va), map_assignment (assig, va)
+	- 19:11 --> Se cierra la sesión
