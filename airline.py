@@ -67,7 +67,7 @@ def show_airline(a):
     else:
         print("No assignments for this airline.")
     if hasattr(a, "costs"):
-        print(f"Total operational costs of the day: {a.costs}")
+        print(f"Total operational costs of the day: {a.costs:.2f}€")
     else:
         print("No costs calculated for this airline.")
 
@@ -288,7 +288,7 @@ def calculate_day_costs(a, vp):
         for assig in assignments:
             flights = flight.sort_flights(assig.flights)
             assig_cost = 0
-            for i in range(1, len(flights) - 1):
+            for i in range(1, len(flights)):
                 code = flights[i - 1].arr
                 index = airport.search_airport_index(vp, code)
                 if index == -1:
