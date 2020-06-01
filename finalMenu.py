@@ -133,7 +133,7 @@ def show_help(screen):
         print("KML options:")
         print("(p) write kml of airports")
         print("(f) write kml of flights")
-        print("(a) write kml of assignments")
+        print("(a) write kml of a specific assignment")
         print("\nOther options:")
         print("(h) show this help screen")
         print("(q) quit to main menu")
@@ -367,8 +367,10 @@ def delay_menu():
                     success("Flight successfully delayed.")
                 else:
                     failure("Couldn't delay the flight.")
-            if option == 'n' or option == 'q':
+            elif option == 'n' or option == 'q':
                 break
+            else:
+                wrong_option()
     else:
         failure("No airlines in memory.")
 
@@ -520,65 +522,71 @@ def kml_menu():
     Menu that provides kml saving functionalities
     Created by Jonathan Pichel on May 22th 2020
     """
-    # Show help the first time
-    print()
-    show_help('kml')
-    # KML loop
-    while True:
-        print("\n[Main -> KML]")
-        option = prompt("What do you want to save in kml?")
-        if option == 'p':
-            if airports:
-                if airport.map_airports(airports):
-                    success(f"Map of the airports written to Airports.kml")
+    if airports:
+        # Show help the first time
+        print()
+        show_help('kml')
+        # KML loop
+        while True:
+            print("\n[Main -> KML]")
+            option = prompt("What do you want to save in kml?")
+            if option == 'p':
+                if airports:
+                    if airport.map_airports(airports):
+                        success(f"Map of the airports written to Airports.kml")
+                    else:
+                        failure(f"Couldn't map the airports.")
                 else:
-                    failure(f"Couldn't map the airports.")
-            else:
-                failure(f"No airports in memory.")
-        elif option == 'f':
-            if airlines:
-                print("Available airlines:")
-                for al in airlines:
-                    print(f" - {al.name}")
-                print("\n[Main -> KML Menu -> Flights]")
-                name = prompt("Name of the airline to map flights")
-                if name:
-                    al = search_airline(name)
-                    if flight.map_flights(al[0].operations, airports):
-                        success(f"Map of the flights on {name} written to Operations.kml")
-                    else:
-                        failure(f"Couldn't map the flights on {name}.")
-            else:
-                failure("No airlines in memory.")
-        elif option == 'a':
-            if airlines:
-                print("Available airlines:")
-                for al in airlines:
-                    print(f" - {al.name}")
-                print("\n[Main -> KML Menu -> Assignments")
-                name = prompt("Airline name")
-                if name:
-                    al = search_airline(name)
-                    if al:
-                        callsign = prompt("Aircraft's callsign") 
-                        assig = [assig for assig in al[0].assignments if assig.aircraft.callsign == callsign]
-                        if assig:
-                            if assignment.map_assignment(assig[0], airports):
-                                success(f"Map of the flights for {callsign} written to {callsign}.kml")
-                            else:
-                                failure(f"Couldn't map the flights assigned to {callsign}.")
+                    failure(f"No airports in memory.")
+            elif option == 'f':
+                if airlines:
+                    print("Available airlines:")
+                    for al in airlines:
+                        print(f" - {al.name}")
+                    print("\n[Main -> KML Menu -> Flights]")
+                    name = prompt("Name of the airline to map flights")
+                    if name:
+                        al = search_airline(name)
+                        if flight.map_flights(al[0].operations, airports):
+                            success(f"Map of the flights on {name} written to Operations.kml")
                         else:
-                            failure(f"No aircraft {callsign} for {name}.")
-                    else:
-                        failure(f"No airline named {name}.")
+                            failure(f"Couldn't map the flights on {name}.")
+                else:
+                    failure("No airlines in memory.")
+            elif option == 'a':
+                if airlines:
+                    print("Available airlines:")
+                    for al in airlines:
+                        print(f" - {al.name}")
+                    print("\n[Main -> KML Menu -> Assignments")
+                    name = prompt("Airline name")
+                    if name:
+                        al = search_airline(name)
+                        if al:
+                            if al[0].assignments:
+                                callsign = prompt("Aircraft's callsign") 
+                                assig = [assig for assig in al[0].assignments if assig.aircraft.callsign == callsign]
+                                if assig:
+                                    if assignment.map_assignment(assig[0], airports):
+                                        success(f"Map of the flights for {callsign} written to {callsign}.kml")
+                                    else:
+                                        failure(f"Couldn't map the flights assigned to {callsign}.")
+                                else:
+                                    failure(f"No aircraft {callsign} for {name}.")
+                            else:
+                                failure(f"No assignments for {name}.")
+                        else:
+                            failure(f"No airline named {name}.")
+                else:
+                    failure("No airlines in memory.")
+            elif option == 'h':
+                show_help('kml')
+            elif option == 'q':
+                break
             else:
-                failure("No airlines in memory.")
-        elif option == 'h':
-            show_help('kml')
-        elif option == 'q':
-            break
-        else:
-            wrong_option()
+                wrong_option()
+    else:
+        failure("No airports in memory.")
 
 def plot_menu():
     """ Function plot_menu():
